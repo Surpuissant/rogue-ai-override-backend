@@ -6,7 +6,7 @@ import { setTimeout as wait } from 'node:timers/promises';
 import WebSocket from "ws";
 
 let server: Server;
-const TEST_PORT: number = 3010;
+const TEST_PORT: number = 3011;
 
 beforeAll(() => {
     server = Server.getInstance(TEST_PORT);
@@ -29,14 +29,19 @@ const connectPlayer = (roomCode: string, port: number) =>
                     reject(err);
                 }
             }, 100);
-
         });
+
+        ws.on('message', (message) => {
+            const str = message.toString();
+            const data = JSON.parse(str);
+            console.log("Message reçu:", data);
+        })
 
         ws.on('error', (err) => reject(err));
     });
 
-describe("Room creation and state", () => {
-    test("should create a room, connect to it and verify its state", async () => {
+describe("Player joins room and create one", () => {
+    test("should create a room, connect to it and update his ready property", async () => {
         const roomCode = server.roomManager.createRoom();
 
         const room = server.roomManager.getRoom(roomCode);
@@ -48,17 +53,13 @@ describe("Room creation and state", () => {
 
         expect(room!.getStateName()).toBe("ready");
 
-        let player3ws = await connectPlayer(roomCode, TEST_PORT);
-        let player4ws = await connectPlayer(roomCode, TEST_PORT);
-        let player5ws = await connectPlayer(roomCode, TEST_PORT);
-        let player6ws = await connectPlayer(roomCode, TEST_PORT);
+        player1ws.send(
+            JSON.stringify({ type: "room", payload: { ready: true } })
+        )
 
-        expect(room!.getStateName()).toBe("full");
+        await wait(1000)
 
-        player6ws.close()
+        expect(room!.players.filter(p => p.ready).length).toBe(1);
 
-        await wait(500)
-
-        expect(room!.getStateName()).toBe("ready");
     });
 });

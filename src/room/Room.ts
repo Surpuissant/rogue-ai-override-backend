@@ -38,6 +38,27 @@ export class Room {
         this.state.removeClient(this, player); // Adapter les states pour Player
     }
 
+    broadcast(data: any) {
+        const message = JSON.stringify(data);
+        this.players.forEach(player => {
+            if (player.ws && player.ws.readyState === 1) { // 1 = OPEN
+                player.ws.send(message);
+            }
+        });
+    }
+
+    broadcastInfoOfAllPlayers() {
+        this.broadcast({
+            "type": "room_info",
+            "payload": {
+                "players": this.players.map(player => {
+                    return { "name": player.name, "ready": player.ready }
+                }),
+                "room_state": this.getStateName()
+            }
+        });
+    }
+
     startGame(): boolean {
         return this.state.startGame(this);
     }

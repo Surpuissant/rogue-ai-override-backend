@@ -2,6 +2,7 @@ import WebSocket, { Server as WebSocketServerType } from 'ws';
 import { RoomManager } from '../room/RoomManager';
 import { Player } from '../player/Player';
 import http from 'http';
+import {Room} from "../room/Room";
 
 export class WebSocketServer {
     private wss: WebSocketServerType;
@@ -23,27 +24,36 @@ export class WebSocketServer {
 
             const player = new Player(ws);
             const { success, error } = RoomManager.getInstance().joinRoom(roomCode, player);
+            let room: Room;
 
             if (!success) {
                 ws.send(JSON.stringify({ error }));
                 ws.close();
                 return;
+            } else {
+                room = RoomManager.getInstance().getRoom(roomCode)!
+                room.broadcastInfoOfAllPlayers()
             }
 
             ws.on('close', () => {
                 RoomManager.getInstance().removePlayer(player);
+                room.broadcastInfoOfAllPlayers()
             });
 
             ws.on('error', (err) => {
+                room.broadcastInfoOfAllPlayers()
                 console.error('WS Error:', err);
             });
 
-            // Exemple : recevoir un message pour ready
             ws.on('message', (data) => {
                 try {
                     const msg = JSON.parse(data.toString());
-                    if (msg.type === 'ready') {
-                        player.setReady(!!msg.ready);
+                    // Process player message
+                    switch(msg.type) {
+                        case 'room':
+                            player.setReady(msg.payload.ready)
+                            room.broadcastInfoOfAllPlayers()
+                            break;
                     }
                 } catch (err) {
                     console.error('Message parsing error:', err);
