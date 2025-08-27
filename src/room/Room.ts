@@ -1,10 +1,10 @@
-import WebSocket from "ws";
+import { Player } from '../player/Player';
 import { RoomState } from "./roomState/RoomState";
 import { WaitingState } from "./roomState/WaitingState";
 
 export class Room {
     private code: string;
-    public clients: WebSocket[] = [];
+    public players: Player[] = [];
     private state: RoomState;
     public readonly MIN_PLAYERS = 2;
     public readonly MAX_PLAYERS = 6;
@@ -18,8 +18,8 @@ export class Room {
         return this.code;
     }
 
-    getClientCount(): number {
-        return this.clients.length;
+    getPlayerCount(): number {
+        return this.players.length;
     }
 
     getStateName(): string {
@@ -30,12 +30,12 @@ export class Room {
         this.state = state;
     }
 
-    addClient(client: WebSocket): boolean {
-        return this.state.addClient(this, client);
+    addPlayer(player: Player): boolean {
+        return this.state.addClient(this, player); // Adapter les states pour Player
     }
 
-    removeClient(client: WebSocket) {
-        this.state.removeClient(this, client);
+    removePlayer(player: Player) {
+        this.state.removeClient(this, player); // Adapter les states pour Player
     }
 
     startGame(): boolean {

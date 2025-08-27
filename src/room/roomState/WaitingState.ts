@@ -1,21 +1,24 @@
 import { RoomState } from "./RoomState";
 import { Room } from "../Room";
-import WebSocket from "ws";
+import { Player } from "../../player/Player";
 import { ReadyState } from "./ReadyState";
 
 export class WaitingState implements RoomState {
     getName() { return "waiting"; }
 
-    addClient(room: Room, client: WebSocket): boolean {
-        room.clients.push(client);
-        if (room.getClientCount() >= room.MIN_PLAYERS) {
+    addClient(room: Room, player: Player): boolean {
+        if (room.players.length >= room.MAX_PLAYERS) return false;
+        room.players.push(player);
+
+        if (room.getPlayerCount() >= room.MIN_PLAYERS) {
             room.setState(new ReadyState());
         }
+
         return true;
     }
 
-    removeClient(room: Room, client: WebSocket): void {
-        room.clients = room.clients.filter(c => c !== client);
+    removeClient(room: Room, player: Player): void {
+        room.players = room.players.filter(p => p !== player);
     }
 
     startGame(room: Room): boolean {

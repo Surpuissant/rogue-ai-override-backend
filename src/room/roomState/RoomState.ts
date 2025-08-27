@@ -1,9 +1,9 @@
 import { Room } from "../Room";
-import WebSocket from "ws";
+import { Player } from "../../player/Player";
 
 export interface RoomState {
-    addClient(room: Room, client: WebSocket): boolean;
-    removeClient(room: Room, client: WebSocket): void;
+    addClient(room: Room, player: Player): boolean;
+    removeClient(room: Room, player: Player): void;
     startGame(room: Room): boolean;
     getName(): string;
 }

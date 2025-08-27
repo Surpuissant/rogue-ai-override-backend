@@ -1,8 +1,9 @@
 import { Room } from './Room';
+import { Player } from '../player/Player';
 import WebSocket from 'ws';
 
 export class RoomManager {
-    private static instance: RoomManager; // singleton instance
+    private static instance: RoomManager;
     private rooms: Map<string, Room> = new Map();
 
     private constructor() {}
@@ -24,37 +25,31 @@ export class RoomManager {
         return code;
     }
 
-    joinRoom(code: string, client: WebSocket): { success: boolean; error?: string } {
+    joinRoom(code: string, player: Player): { success: boolean; error?: string } {
         const room = this.rooms.get(code);
         if (!room) return { success: false, error: 'Room inexistante' };
 
-        const added = room.addClient(client);
+        const added = room.addPlayer(player);
         if (!added) return { success: false, error: 'Impossible de rejoindre la room (pleine ou état incorrect)' };
 
         return { success: true };
     }
 
-    removeEmptyRooms() {
-        for (const [code, room] of this.rooms.entries()) {
-            if (room.getClientCount() === 0) {
-                //this.rooms.delete(code);
+    removePlayer(player: Player) {
+        for (const room of this.rooms.values()) {
+            const index = room.players.indexOf(player);
+            if (index !== -1) {
+                room.removePlayer(player);
+                // Supprime la room si elle devient vide
+                if (room.getPlayerCount() === 0) {
+                    this.rooms.delete(room.getCode());
+                }
+                break;
             }
         }
     }
 
     getRoom(code: string): Room | undefined {
         return this.rooms.get(code);
-    }
-
-    removeClientFromRoom(client: WebSocket) {
-        for (const room of this.rooms.values()) {
-            if (room.clients.includes(client)) {
-                room.removeClient(client);
-                if (room.getClientCount() === 0) {
-                    this.rooms.delete(room.getCode());
-                }
-                break;
-            }
-        }
     }
 }

@@ -1,16 +1,16 @@
 import { RoomState } from "./RoomState";
 import { Room } from "../Room";
-import WebSocket from "ws";
+import { Player } from "../../player/Player";
 
 export class PlayingState implements RoomState {
     getName() { return "playing"; }
 
-    addClient(room: Room, client: WebSocket): boolean {
+    addClient(room: Room, player: Player): boolean {
         return false; // pas d’ajout en cours de partie
     }
 
-    removeClient(room: Room, client: WebSocket): void {
-        room.clients = room.clients.filter(c => c !== client);
+    removeClient(room: Room, player: Player): void {
+        room.players = room.players.filter(p => p !== player);
     }
 
     startGame(room: Room): boolean {
