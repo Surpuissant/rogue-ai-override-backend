@@ -14,15 +14,15 @@ export class Server {
 
     private constructor(port: number = 3000) {
         this.port = port;
-        this.roomManager = new RoomManager();
+        this.roomManager = RoomManager.getInstance();
         this.restServer = new RestServer(this.roomManager);
         this.server = http.createServer(this.restServer.app);
-        new WebSocketServer(this.server, this.roomManager);
+        new WebSocketServer(this.server);
     }
 
-    public static getInstance(): Server {
+    public static getInstance(port: number = 3000): Server {
         if (!Server.instance) {
-            Server.instance = new Server(3000);
+            Server.instance = new Server(port);
         }
         return Server.instance;
     }

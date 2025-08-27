@@ -4,10 +4,8 @@ import http from 'http';
 
 export class WebSocketServer {
     private wss: WebSocketServerType;
-    private roomManager: RoomManager;
 
-    constructor(server: http.Server, roomManager: RoomManager) {
-        this.roomManager = roomManager;
+    constructor(server: http.Server) {
         this.wss = new WebSocket.Server({ server });
         this.setupWebSocket();
     }
@@ -22,15 +20,16 @@ export class WebSocketServer {
                 return;
             }
 
-            const joined = this.roomManager.joinRoom(roomCode, ws);
+            const { success, error } = RoomManager.getInstance().joinRoom(roomCode, ws);
 
-            if (!joined) {
-                ws.send(JSON.stringify({ error: 'Room inexistante' }));
+            if (!success) {
+                ws.send(JSON.stringify({ error }));
                 ws.close();
+                return;
             }
 
             ws.on('close', () => {
-                this.roomManager.removeEmptyRooms();
+                RoomManager.getInstance().removeEmptyRooms();
             });
 
             ws.on('error', (err) => {

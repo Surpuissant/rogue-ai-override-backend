@@ -1,39 +1,44 @@
-import WebSocket from 'ws';
+import WebSocket from "ws";
+import { RoomState } from "./roomState/RoomState";
+import { WaitingState } from "./roomState/WaitingState";
 
 export class Room {
-    public code: string;
-    private clients: Set<WebSocket> = new Set();
+    private code: string;
+    public clients: WebSocket[] = [];
+    private state: RoomState;
+    public readonly MIN_PLAYERS = 2;
+    public readonly MAX_PLAYERS = 6;
 
     constructor(code: string) {
         this.code = code;
+        this.state = new WaitingState();
     }
 
-    addClient(client: WebSocket) {
-        this.clients.add(client);
-        client.send(JSON.stringify({ message: `Bienvenue dans la room ${this.code}` }));
+    getCode(): string {
+        return this.code;
+    }
 
-        client.on('close', () => {
-            this.removeClient(client);
-        });
+    getClientCount(): number {
+        return this.clients.length;
+    }
 
-        client.on('message', (data) => {
-            this.broadcast(data.toString(), client);
-        });
+    getStateName(): string {
+        return this.state.getName();
+    }
+
+    setState(state: RoomState) {
+        this.state = state;
+    }
+
+    addClient(client: WebSocket): boolean {
+        return this.state.addClient(this, client);
     }
 
     removeClient(client: WebSocket) {
-        this.clients.delete(client);
+        this.state.removeClient(this, client);
     }
 
-    broadcast(message: string, sender?: WebSocket) {
-        for (const client of this.clients) {
-            if (client !== sender && client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify({ message }));
-            }
-        }
-    }
-
-    getClientCount() {
-        return this.clients.size;
+    startGame(): boolean {
+        return this.state.startGame(this);
     }
 }

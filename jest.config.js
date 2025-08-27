@@ -8,4 +8,6 @@ module.exports = {
   transform: {
     ...tsJestTransformCfg,
   },
+  globalSetup: './test/jest.global-setup.ts',
+  globalTeardown: './test/jest.global-teardown.ts',
 };
