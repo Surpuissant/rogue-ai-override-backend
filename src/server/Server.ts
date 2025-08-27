@@ -5,10 +5,12 @@ import { WebSocketServer } from './WebSocketServer';
 
 export class Server {
     private static instance: Server;
-    private port: number;
-    public roomManager: RoomManager;
-    public restServer: RestServer;
-    public server: http.Server;
+
+    private readonly port: number;
+
+    public readonly roomManager: RoomManager;
+    public readonly restServer: RestServer;
+    public readonly server: http.Server;
 
     private constructor(port: number = 3000) {
         this.port = port;
