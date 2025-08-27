@@ -24,4 +24,9 @@ export class WaitingState implements RoomState {
     startGame(room: Room): boolean {
         return false;
     }
+
+    onPlayerReady(room: Room, player: Player): void {
+        // Il ne se passe rien si le joueur est ready dans le Waiting State
+        return
+    }
 }

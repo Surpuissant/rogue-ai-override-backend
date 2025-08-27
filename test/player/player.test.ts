@@ -61,5 +61,14 @@ describe("Player joins room and create one", () => {
 
         expect(room!.players.filter(p => p.ready).length).toBe(1);
 
+
+        player2ws.send(
+            JSON.stringify({ type: "room", payload: { ready: true } })
+        )
+
+        await wait(1000)
+
+        expect(room!.players.filter(p => p.ready).length).toBe(2);
+
     });
 });

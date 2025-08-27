@@ -24,24 +24,23 @@ export class WebSocketServer {
 
             const player = new Player(ws);
             const { success, error } = RoomManager.getInstance().joinRoom(roomCode, player);
-            let room: Room;
 
             if (!success) {
                 ws.send(JSON.stringify({ error }));
                 ws.close();
                 return;
-            } else {
-                room = RoomManager.getInstance().getRoom(roomCode)!
-                room.broadcastInfoOfAllPlayers()
             }
+
+            player.room?.broadcastInfoOfAllPlayers()
+
 
             ws.on('close', () => {
                 RoomManager.getInstance().removePlayer(player);
-                room.broadcastInfoOfAllPlayers()
+                player.room?.broadcastInfoOfAllPlayers()
             });
 
             ws.on('error', (err) => {
-                room.broadcastInfoOfAllPlayers()
+                player.room?.broadcastInfoOfAllPlayers()
                 console.error('WS Error:', err);
             });
 
@@ -52,7 +51,6 @@ export class WebSocketServer {
                     switch(msg.type) {
                         case 'room':
                             player.setReady(msg.payload.ready)
-                            room.broadcastInfoOfAllPlayers()
                             break;
                     }
                 } catch (err) {

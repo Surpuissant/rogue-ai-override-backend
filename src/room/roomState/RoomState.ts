@@ -6,4 +6,5 @@ export interface RoomState {
     removeClient(room: Room, player: Player): void;
     startGame(room: Room): boolean;
     getName(): string;
+    onPlayerReady(room: Room, player: Player): void;
 }

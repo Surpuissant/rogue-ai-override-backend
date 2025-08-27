@@ -32,6 +32,7 @@ export class RoomManager {
         const added = room.addPlayer(player);
         if (!added) return { success: false, error: 'Impossible de rejoindre la room (pleine ou état incorrect)' };
 
+        player.room = room;
         return { success: true };
     }
 

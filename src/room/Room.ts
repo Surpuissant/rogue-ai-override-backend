@@ -59,6 +59,10 @@ export class Room {
         });
     }
 
+    onPlayerReady(player: Player): void {
+        this.state.onPlayerReady(this, player);
+    }
+
     startGame(): boolean {
         return this.state.startGame(this);
     }

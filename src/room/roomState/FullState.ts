@@ -17,7 +17,15 @@ export class FullState implements RoomState {
     }
 
     startGame(room: Room): boolean {
-        room.setState(new PlayingState());
+        room.setState(new PlayingState(room));
         return true;
+    }
+
+    onPlayerReady(room: Room, player: Player): void {
+        // Si le joueur ainsi que tout les autres sont ready, alors on peut lancé la partie
+        var isEveryPlayerReady = room.players.every(p => p.ready);
+        if(isEveryPlayerReady) {
+            room.startGame();
+        }
     }
 }
