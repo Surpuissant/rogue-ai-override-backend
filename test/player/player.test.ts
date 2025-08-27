@@ -69,6 +69,9 @@ describe("Player joins room and create one", () => {
         await wait(1000)
 
         expect(room!.players.filter(p => p.ready).length).toBe(2);
+        expect(room!.getStateName()).toBe("timer");
+        await wait(3000)
+        expect(room!.getStateName()).toBe("playing");
 
-    });
+    }, 30000);
 });

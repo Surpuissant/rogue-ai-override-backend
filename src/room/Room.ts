@@ -11,7 +11,7 @@ export class Room {
 
     constructor(code: string) {
         this.code = code;
-        this.state = new WaitingState();
+        this.state = new WaitingState(this);
     }
 
     getCode(): string {
@@ -31,11 +31,11 @@ export class Room {
     }
 
     addPlayer(player: Player): boolean {
-        return this.state.addClient(this, player); // Adapter les states pour Player
+        return this.state.addClient(player); // Adapter les states pour Player
     }
 
     removePlayer(player: Player) {
-        this.state.removeClient(this, player); // Adapter les states pour Player
+        this.state.removeClient(player); // Adapter les states pour Player
     }
 
     broadcast(data: any) {
@@ -48,22 +48,27 @@ export class Room {
     }
 
     broadcastInfoOfAllPlayers() {
-        this.broadcast({
-            "type": "room_info",
-            "payload": {
-                "players": this.players.map(player => {
-                    return { "name": player.name, "ready": player.ready }
-                }),
-                "room_state": this.getStateName()
+        this.players.forEach(player => {
+            var raw_ws_message = {
+                "type": "room_info",
+                "payload": {
+                    "you": { "name": player.name, "ready": player.ready, "id": player.id },
+                    "players": this.players.map(player => {
+                        return { "name": player.name, "ready": player.ready, "id": player.id }
+                    }),
+                    "room_state": this.getStateName()
+                }
             }
-        });
+            const message = JSON.stringify(raw_ws_message);
+            player.ws.send(message);
+        })
     }
 
     onPlayerReady(player: Player): void {
-        this.state.onPlayerReady(this, player);
+        this.state.onPlayerReady(player);
     }
 
     startGame(): boolean {
-        return this.state.startGame(this);
+        return this.state.startGame();
     }
 }

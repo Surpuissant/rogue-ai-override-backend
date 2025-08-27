@@ -5,27 +5,29 @@ import { PlayingState } from "./PlayingState";
 import { ReadyState } from "./ReadyState";
 
 export class FullState implements RoomState {
+    constructor(private room: Room){};
+
     getName() { return "full"; }
 
-    addClient(room: Room, player: Player): boolean {
+    addClient(player: Player): boolean {
         return false;
     }
 
-    removeClient(room: Room, player: Player): void {
-        room.players = room.players.filter(p => p !== player);
-        room.setState(new ReadyState());
+    removeClient(player: Player): void {
+        this.room.players = this.room.players.filter(p => p !== player);
+        this.room.setState(new ReadyState(this.room));
     }
 
-    startGame(room: Room): boolean {
-        room.setState(new PlayingState(room));
+    startGame(): boolean {
+        this.room.setState(new PlayingState(this.room));
         return true;
     }
 
-    onPlayerReady(room: Room, player: Player): void {
+    onPlayerReady(player: Player): void {
         // Si le joueur ainsi que tout les autres sont ready, alors on peut lancé la partie
-        var isEveryPlayerReady = room.players.every(p => p.ready);
+        var isEveryPlayerReady = this.room.players.every(p => p.ready);
         if(isEveryPlayerReady) {
-            room.startGame();
+            this.room.startGame();
         }
     }
 }

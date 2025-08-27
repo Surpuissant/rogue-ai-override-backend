@@ -13,10 +13,12 @@ export class Player {
     public ready: boolean = false;
     public name: string;
     public room: Room | undefined;
+    public id: string;
 
     constructor(ws: WebSocket) {
         this.ws = ws;
         this.name = NAMES[Math.floor(Math.random() * NAMES.length)];
+        this.id = crypto.randomUUID();
     }
 
     setRoom(room: Room) {

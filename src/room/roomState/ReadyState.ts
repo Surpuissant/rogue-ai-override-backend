@@ -4,36 +4,39 @@ import { Player } from "../../player/Player";
 import { WaitingState } from "./WaitingState";
 import { FullState } from "./FullState";
 import { PlayingState } from "./PlayingState";
+import {TimerState} from "./TimerState";
 
 export class ReadyState implements RoomState {
+    constructor(private room: Room){};
+
     getName() { return "ready"; }
 
-    addClient(room: Room, player: Player): boolean {
-        if (room.players.length >= room.MAX_PLAYERS) return false;
-        room.players.push(player);
-        if (room.players.length === room.MAX_PLAYERS) {
-            room.setState(new FullState());
+    addClient(player: Player): boolean {
+        if (this.room.players.length >= this.room.MAX_PLAYERS) return false;
+        this.room.players.push(player);
+        if (this.room.players.length === this.room.MAX_PLAYERS) {
+            this.room.setState(new FullState(this.room));
         }
         return true;
     }
 
-    removeClient(room: Room, player: Player): void {
-        room.players = room.players.filter(p => p !== player);
-        if (room.players.length < room.MIN_PLAYERS) {
-            room.setState(new WaitingState());
+    removeClient(player: Player): void {
+        this.room.players = this.room.players.filter(p => p !== player);
+        if (this.room.players.length < this.room.MIN_PLAYERS) {
+            this.room.setState(new WaitingState(this.room));
         }
     }
 
-    startGame(room: Room): boolean {
-        room.setState(new PlayingState(room));
+    startGame(): boolean {
+        this.room.setState(new PlayingState(this.room));
         return true;
     }
 
-    onPlayerReady(room: Room, player: Player): void {
+    onPlayerReady(player: Player): void {
         // Si le joueur ainsi que tout les autres sont ready, alors on peut lancé la partie
-        var isEveryPlayerReady = room.players.every(p => p.ready);
+        var isEveryPlayerReady = this.room.players.every(p => p.ready);
         if(isEveryPlayerReady) {
-            room.startGame();
+            this.room.setState(new TimerState(this.room))
         }
     }
 }

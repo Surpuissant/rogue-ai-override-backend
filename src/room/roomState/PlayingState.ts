@@ -3,7 +3,7 @@ import { Room } from "../Room";
 import { Player } from "../../player/Player";
 
 export class PlayingState implements RoomState {
-    public constructor(public readonly room: Room) {
+    public constructor(private room: Room) {
         room.broadcast({
             "type": "game_state",
             "payload": {
@@ -14,19 +14,19 @@ export class PlayingState implements RoomState {
 
     getName() { return "playing"; }
 
-    addClient(room: Room, player: Player): boolean {
+    addClient(player: Player): boolean {
         return false; // pas d’ajout en cours de partie
     }
 
-    removeClient(room: Room, player: Player): void {
-        room.players = room.players.filter(p => p !== player);
+    removeClient(player: Player): void {
+        this.room.players = this.room.players.filter(p => p !== player);
     }
 
-    startGame(room: Room): boolean {
+    startGame(): boolean {
         return false;
     }
 
-    onPlayerReady(room: Room, player: Player): void {
+    onPlayerReady(player: Player): void {
         return
     }
 }
