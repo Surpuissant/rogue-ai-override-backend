@@ -8,7 +8,7 @@ export class TimerState implements RoomState {
     private timer?: NodeJS.Timeout;
 
     constructor(private room: Room, private duration: number = 3000) {
-        this.room.broadcast({
+        room.broadcast({
             type: "game_state",
             payload: { state: "timer_before_start", duration: this.duration }
         });

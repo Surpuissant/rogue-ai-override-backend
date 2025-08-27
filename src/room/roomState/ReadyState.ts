@@ -7,7 +7,12 @@ import { PlayingState } from "./PlayingState";
 import {TimerState} from "./TimerState";
 
 export class ReadyState implements RoomState {
-    constructor(private room: Room){};
+    constructor(private room: Room){
+        room.broadcast({
+            type: "game_state",
+            payload: { state: "lobby_ready" }
+        });
+    };
 
     getName() { return "ready"; }
 

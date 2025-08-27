@@ -5,7 +5,12 @@ import { PlayingState } from "./PlayingState";
 import { ReadyState } from "./ReadyState";
 
 export class FullState implements RoomState {
-    constructor(private room: Room){};
+    constructor(private room: Room){
+        room.broadcast({
+            type: "game_state",
+            payload: { state: "lobby_full" }
+        });
+    };
 
     getName() { return "full"; }
 

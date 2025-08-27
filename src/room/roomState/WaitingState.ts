@@ -4,7 +4,12 @@ import { Player } from "../../player/Player";
 import { ReadyState } from "./ReadyState";
 
 export class WaitingState implements RoomState {
-    constructor(private room: Room){};
+    constructor(private room: Room){
+        room.broadcast({
+            type: "game_state",
+            payload: { state: "lobby_waiting" }
+        });
+    };
 
     getName() { return "waiting"; }
 
