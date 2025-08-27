@@ -8,7 +8,7 @@ export class FullState implements RoomState {
     getName() { return "full"; }
 
     addClient(room: Room, client: WebSocket): boolean {
-        return false; // refus, déjà pleine
+        return false;
     }
 
     removeClient(room: Room, client: WebSocket): void {

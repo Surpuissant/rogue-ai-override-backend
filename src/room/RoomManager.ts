@@ -45,4 +45,16 @@ export class RoomManager {
     getRoom(code: string): Room | undefined {
         return this.rooms.get(code);
     }
+
+    removeClientFromRoom(client: WebSocket) {
+        for (const room of this.rooms.values()) {
+            if (room.clients.includes(client)) {
+                room.removeClient(client);
+                if (room.getClientCount() === 0) {
+                    this.rooms.delete(room.getCode());
+                }
+                break;
+            }
+        }
+    }
 }

@@ -29,6 +29,7 @@ export class WebSocketServer {
             }
 
             ws.on('close', () => {
+                RoomManager.getInstance().removeClientFromRoom(ws);
                 RoomManager.getInstance().removeEmptyRooms();
             });
 
