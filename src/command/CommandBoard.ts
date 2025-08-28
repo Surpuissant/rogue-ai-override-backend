@@ -4,10 +4,7 @@ import {CommandFactory} from "./CommandFactory";
 export class CommandBoard {
     public commands: Command[] = [];
     public instruction: Instruction | null = null;
-
-    private constructor() {
-
-    }
+    public instructionInterval?: NodeJS.Timeout;
 
     public execute(commandId: string, action: string) {
         this.commands.forEach(command => {

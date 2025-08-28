@@ -120,13 +120,19 @@ describe("Game flow tests", () => {
         expect(globalThreat).toBe(20);
 
         // Et maintenant du coup, l'instruction P1 a du s'update
-        expect(instructionP1).not.toBe(firstInstruction);
+        expect(instructionP1.instruction_text).not.toBe(firstInstruction);
     });
 
     test("Global board states remain consistent", () => {
         expect(boardCommandP1.length).toBe(4);
         expect(boardCommandP2.length).toBe(4);
         expect(room!.players.filter(p => p.ready).length).toBe(2);
+    });
+
+    test("Timeout on instruction works", async () => {
+        firstInstruction = instructionP1.instruction_text
+        await wait(3100);
+        expect(instructionP1.instruction_text).not.toBe(firstInstruction);
     });
 
 });
