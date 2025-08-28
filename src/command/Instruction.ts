@@ -15,6 +15,7 @@ export class Instruction {
             "timestampCreation": this.timestampCreation,
             "command_type": this.command.getType(),
             "instruction_text": this.text,
+            "expected_status": this.expectedStatus
         }
     }
 
