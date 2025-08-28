@@ -2,6 +2,8 @@ import express, { Application, Request, Response } from 'express';
 import { RoomManager } from '../room/RoomManager';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
+import { ToggleCommand } from "../command/ToggleCommand";
+import { SliderCommand } from "../command/SliderCommand";
 
 export class RestServer {
     public app: Application;
@@ -53,17 +55,55 @@ export class RestServer {
             res.json({ message: "Server is alive !" });
         });
 
+
         /**
          * @openapi
          * /create-room:
          *   post:
          *     summary: Create a new room
+         *     requestBody:
+         *       content:
+         *         application/json:
+         *           schema:
+         *             type: object
+         *             properties:
+         *               gameType:
+         *                 type: string
+         *                 enum: ["toggle", "slider"]
+         *                 description: Optional command type for the room, enforce a type of Command and give only the given type
          *     responses:
          *       200:
          *         description: Room created successfully
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         *               properties:
+         *                 roomCode:
+         *                   type: string
+         *                   description: The generated room code
          */
         this.app.post('/create-room', (req: Request, res: Response) => {
-            const code = this.roomManager.createRoom();
+            const { gameType } = req.body || {};
+
+            // Validation du gameType s'il est fourni
+            if (gameType && !['toggle', 'slider'].includes(gameType)) {
+                return res.status(400).json({
+                    error: 'Invalid gameType. Must be either "toggle" or "slider"'
+                });
+            }
+
+            let code = "";
+            switch (gameType) {
+                case 'toggle':
+                    code = this.roomManager.createRoom(ToggleCommand);
+                    break;
+                case 'slider':
+                    code = this.roomManager.createRoom(SliderCommand);
+                    break;
+                default:
+                    code = this.roomManager.createRoom();
+            }
             res.json({ roomCode: code });
         });
 

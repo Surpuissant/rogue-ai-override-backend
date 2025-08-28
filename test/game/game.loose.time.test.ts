@@ -96,7 +96,7 @@ describe("Game flow tests", () => {
         expect(globalThreat).toBe(30);
     });
 
-    test("Verify game is loosable with timeout", async () => {
+    test("Verify game is losable with timeout", async () => {
         await wait(60000);
         expect(room?.getStateName()).toBe("end");
         expect(win).toBe(false);

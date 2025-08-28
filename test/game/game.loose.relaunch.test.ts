@@ -96,7 +96,7 @@ describe("Game flow tests", () => {
         expect(globalThreat).toBe(30);
     });
 
-    test("Verify game is loosable", async () => {
+    test("Verify game is losable", async () => {
         await wait(200);
         const selectedPlayer = player1ws;
         const selectedInstruction1 = instructionP1;
