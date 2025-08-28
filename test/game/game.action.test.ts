@@ -78,7 +78,7 @@ afterAll(() => {
 
 describe("Game flow tests", () => {
 
-    test("Room should exist and start in waiting state", () => {
+    test("Room should exist and start in waiting state", async () => {
         expect(room).toBeDefined();
         expect(room!.getStateName()).toBe("playing");
         expect(boardCommandP1.length).toBeGreaterThanOrEqual(1);
@@ -90,11 +90,11 @@ describe("Game flow tests", () => {
 
     test("Player toggles action", async () => {
         await wait(200);
-        var selectedPlayer = player1ws;
-        var selectedInstruction = instructionP1;
+        let selectedPlayer = player1ws;
+        let selectedInstruction = instructionP1;
         firstInstruction = selectedInstruction.instruction_text
 
-        var command = boardCommandP1.find((command) => command.id === selectedInstruction.command_id)
+        let command = boardCommandP1.find((command) => command.id === selectedInstruction.command_id)
 
         if(command === undefined){
             selectedPlayer = player2ws

@@ -2,6 +2,7 @@
 
 import { Server } from "../../src/server/Server";
 import { setTimeout as wait } from 'node:timers/promises';
+// @ts-ignore
 import WebSocket from "ws";
 
 let server: Server;
@@ -94,65 +95,23 @@ describe("Game flow tests", () => {
         expect(globalThreat).toBe(30);
     });
 
-    test("Player1 toggles action", async () => {
-        firstInstruction = instructionP2.instruction_text
-        // Dans ce jeu, les actions du joueur 1 dépendant des instruction du joueur 2
-        player1ws.send(JSON.stringify({
-            type: "execute_action",
-            payload: {
-                // Ici je triche pour être vraiment sûr que le test passe
-                command_id: instructionP2.command_id,
-                action: "toggle"
-            }
-        }));
-        await wait(200);
-        expect(globalThreat).toBe(25);
-        // Et maintenant du coup, l'instruction P2 a du s'update
-        expect(instructionP2).not.toBe(firstInstruction);
-    });
-
-    test("Player2 toggles action", async () => {
-        firstInstruction = instructionP1.instruction_text
-        player2ws.send(JSON.stringify({
-            type: "execute_action",
-            payload: {
-                command_id: instructionP1.command_id,
-                action: "toggle"
-            }
-        }));
-        await wait(200);
-        expect(globalThreat).toBe(20);
-
-        // Et maintenant du coup, l'instruction P1 a du s'update
-        expect(instructionP1.instruction_text).not.toBe(firstInstruction);
-    });
-
-    test("Global board states remain consistent", () => {
-        expect(boardCommandP1.length).toBe(4);
-        expect(boardCommandP2.length).toBe(4);
-        expect(room!.players.filter(p => p.ready).length).toBe(2);
-    });
-
-    test("Timeout on instruction works", async () => {
-        firstInstruction = instructionP1.instruction_text
-        await wait(3100);
-        expect(instructionP1.instruction_text).not.toBe(firstInstruction);
-        // Le global threat a du un peu augmenté
-        expect(globalThreat).toBe(25);
-    });
-
     test("Verify game is winnable", async () => {
         // Tant qu'il y a pas de win, il faut réessayer
         while(win === null) {
-            player1ws.send(JSON.stringify({
+            let selectedPlayer = player1ws;
+            let selectedInstruction = instructionP1;
+
+            let command = boardCommandP1.find((command) => command.id === selectedInstruction.command_id)
+
+            if(command === undefined){
+                selectedPlayer = player2ws
+            }
+
+            selectedPlayer.send(JSON.stringify({
                 type: "execute_action",
-                payload: { command_id: instructionP2.command_id, action: "toggle" }
+                payload: { command_id: selectedInstruction.command_id, action: "toggle" }
             }));
-            player2ws.send(JSON.stringify({
-                type: "execute_action",
-                payload: { command_id: instructionP1.command_id, action: "toggle" }
-            }));
-            await wait(2500);
+            await wait(1200);
         }
         expect(room?.getStateName()).toBe("end");
         expect(win).toBe(true);
