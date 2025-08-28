@@ -58,12 +58,18 @@ export class PlayingState implements RoomState {
     }
 
     public updateRandomInstructionOnBoard(board: CommandBoard) {
-        const others = Array.from(this.commandPlayer.values()).filter(b => b !== board);
-        if (others.length === 0) return;
+        // 1/3 Chance d'avoir une commande de son propre board
+        let selectedBoard;
+        if (Math.random() < 1/3) {
+            selectedBoard = board;
+        } else {
+            const others = Array.from(this.commandPlayer.values()).filter(b => b !== board);
+            if (others.length === 0) return;
+            selectedBoard = others[Math.floor(Math.random() * others.length)];
+        }
 
-        const randomOther = others[Math.floor(Math.random() * others.length)];
-
-        const availableCommands = randomOther.commands.filter(cmd => {
+        // Récupérer les commandes disponibles du board sélectionné
+        const availableCommands = selectedBoard.commands.filter(cmd => {
             const currentInstructionId = board.instruction?.command?.id;
             return cmd.getInstruction().command.id !== currentInstructionId;
         });
@@ -73,23 +79,7 @@ export class PlayingState implements RoomState {
         const index = Math.floor(Math.random() * availableCommands.length);
         const instruction = availableCommands[index].getInstruction();
         board.setInstruction(instruction);
-
         this.startInstructionRotation(board);
-    }
-
-    private broadcastBoard(board: CommandBoard) {
-        const player = Array.from(this.commandPlayer.entries())
-            .find(([_, b]) => b === board)?.[0];
-        if (!player) return;
-        const message = JSON.stringify({
-            type: "player_board",
-            payload: {
-                board: board.toObject(),
-                instruction: board.instruction?.toObject(),
-                threat: this.threat
-            }
-        });
-        player.ws.send(message);
     }
 
     broadcastInfoToPlayer(): void {
@@ -131,6 +121,7 @@ export class PlayingState implements RoomState {
             let commandComplete = false;
             this.commandPlayer.forEach(board => {
                 if (board.instruction?.isComplete()) {
+                    Logger.info(`Player : ${player.id} completed command`);
                     commandComplete = true;
                     this.updateRandomInstructionOnBoard(board);
                 }

@@ -2,6 +2,7 @@
 
 import { Server } from "../../src/server/Server";
 import { setTimeout as wait } from 'node:timers/promises';
+// @ts-ignore
 import WebSocket from "ws";
 
 let server: Server;
