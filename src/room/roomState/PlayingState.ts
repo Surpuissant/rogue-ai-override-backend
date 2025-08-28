@@ -12,10 +12,11 @@ export interface TryAttempt {
     playerName?: string;
 }
 
+// noinspection JSUnusedGlobalSymbols
 export class PlayingState implements RoomState {
     private threat: number = 30;
     public commandPlayer: Map<Player, CommandBoard> = new Map();
-    private gameStartTime: number;
+    private readonly gameStartTime: number;
     private tryHistory: TryAttempt[] = [];
 
     public constructor(private room: Room) {

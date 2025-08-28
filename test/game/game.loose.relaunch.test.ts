@@ -98,12 +98,12 @@ describe("Game flow tests", () => {
 
     test("Verify game is loosable", async () => {
         await wait(200);
-        var selectedPlayer = player1ws;
-        var selectedInstruction1 = instructionP1;
-        var selectedInstruction2 = instructionP1;
+        const selectedPlayer = player1ws;
+        const selectedInstruction1 = instructionP1;
+        const selectedInstruction2 = instructionP1;
 
-        var command = boardCommandP1.find((command) =>
-            command.id !== selectedInstruction1.command_id && command.id !== selectedInstruction2.command_id)
+        const command = boardCommandP1.find((command) =>
+            command.id !== selectedInstruction1.command_id && command.id !== selectedInstruction2.command_id);
 
         for (let i = 0; i < 18; i++) {
             selectedPlayer.send(JSON.stringify({
@@ -139,12 +139,12 @@ describe("Game flow tests", () => {
 
     test("Verify game is loosable (AGAIN)", async () => {
         await wait(200);
-        var selectedPlayer = player1ws;
-        var selectedInstruction1 = instructionP1;
-        var selectedInstruction2 = instructionP1;
+        const selectedPlayer = player1ws;
+        const selectedInstruction1 = instructionP1;
+        const selectedInstruction2 = instructionP1;
 
-        var command = boardCommandP1.find((command) =>
-            command.id !== selectedInstruction1.command_id && command.id !== selectedInstruction2.command_id)
+        const command = boardCommandP1.find((command) =>
+            command.id !== selectedInstruction1.command_id && command.id !== selectedInstruction2.command_id);
 
         for (let i = 0; i < 18; i++) {
             selectedPlayer.send(JSON.stringify({

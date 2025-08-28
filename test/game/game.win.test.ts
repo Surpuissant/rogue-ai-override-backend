@@ -20,7 +20,7 @@ let boardCommandP1: any[] = [];
 let instructionP2: any = null;
 let boardCommandP2: any[] = [];
 
-let firstInstruction: any = null;
+
 let win: any = null;
 
 // Utility function pour connecter un joueur
