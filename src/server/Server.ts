@@ -2,6 +2,7 @@ import http from 'http';
 import { RoomManager } from '../room/RoomManager';
 import { RestServer } from './RestServer';
 import { WebSocketServer } from './WebSocketServer';
+import {Logger} from "../utils/Logger";
 
 export class Server {
     private static instance: Server;
@@ -29,7 +30,7 @@ export class Server {
 
     public start() {
         this.server.listen(this.port, () => {
-            console.log(`Serveur démarré sur http://localhost:${this.port}`);
+            Logger.info(`Serveur démarré sur http://localhost:${this.port}`);
         });
     }
 }

@@ -1,14 +1,19 @@
 import { RoomState } from "./RoomState";
 import { Room } from "../Room";
 import { Player } from "../../player/Player";
+import { CommandBoard } from "../../command/CommandBoard";
 
 export class PlayingState implements RoomState {
     private threat: number = 0.3;
+    public commandPlayer: Map<Player, CommandBoard> = new Map();
 
     public constructor(private room: Room) {
         room.broadcast({
             "type": "game_state",
             "payload": { "state": "game_start" }
+        })
+        room.players.forEach(player => {
+            this.commandPlayer.set(player, CommandBoard.createCommandBoard())
         })
     }
 

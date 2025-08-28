@@ -1,5 +1,6 @@
 import WebSocket from "ws";
 import {Room} from "../room/Room";
+import {Logger} from "../utils/Logger";
 
 const NAMES = [
     "Coralie",
@@ -37,9 +38,20 @@ export class Player {
                 case 'room':
                     this.setReady(data.payload.ready)
                     break;
+                default:
+                    Logger.warn("Unknown type of message in Player on Message" + data.type);
+                    break;
             }
         } catch (err) {
-            console.error('Message parsing error:', err);
+            Logger.error('Message parsing error:' + err);
+        }
+    }
+
+    public toObject(): object {
+        return {
+            "id": this.id,
+            "name": this.name,
+            "ready": this.ready
         }
     }
 }

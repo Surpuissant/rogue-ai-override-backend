@@ -52,10 +52,8 @@ export class Room {
             var raw_ws_message = {
                 "type": "room_info",
                 "payload": {
-                    "you": { "name": player.name, "ready": player.ready, "id": player.id },
-                    "players": this.players.map(player => {
-                        return { "name": player.name, "ready": player.ready, "id": player.id }
-                    }),
+                    "you": player.toObject(),
+                    "players": this.players.map(p => p.toObject()),
                     "room_state": this.getStateName()
                 }
             }
