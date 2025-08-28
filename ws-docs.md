@@ -1,15 +1,76 @@
 # Rogue AI Override Backend - WS Docs
-> Malheureusement, il n'y a pas de docs swagger pour du websocket :/ voici donc un petit readme qui devrait vous aider à mieux comprendre comment communiqué avec le backend
+
+## Base Docs
+
+### Messages Reçus
+
+Le WebSocket envoie plusieurs types de messages pour informer les clients de l'état du jeu et des actions possibles. Voici quelques exemples :
+
+- **game_state** : Indique l'état actuel de la partie, comme "lobby_waiting", "lobby_ready", "timer_before_start", ou "game_start".
+  ```js
+  {
+      type: "game_state",
+      payload: { state: "lobby_waiting" }
+  }
+  ```
+
+- **room_info** : Fournit des informations sur la salle, y compris les joueurs présents et leur état de préparation.
+  ```js
+  {
+      type: 'room_info',
+      payload: {
+          you: { id: '...', name: '...', ready: false },
+          players: [ { id: '...', name: '...', ready: false } ],
+          room_state: 'ready'
+      }
+  }
+  ```
+
+- **player_board** : Détaille les commandes disponibles pour le joueur et l'instruction actuelle.
+  ```js
+  {
+      type: 'player_board',
+      payload: {
+          board: { commands: [ /* ... */ ] },
+          instruction: { /* ... */ },
+          threat: 30
+      }
+  }
+  ```
+
+### Messages Envoyés
+
+Les clients peuvent envoyer des messages pour interagir avec le jeu :
+
+- **room** : Pour indiquer que le joueur est prêt.
+  ```js
+  { 
+      type: "room", 
+      payload: { ready: true } 
+  }
+  ```
+
+- **execute_action** : Pour exécuter une action spécifique sur une commande.
+  ```js
+  {
+      type: "execute_action",
+      payload : {
+          command_id: "cross_validation",
+          action: "toggle"
+      }
+  }
+  ```
+> Malheureusement, il n'y a pas de documentation Swagger pour le WebSocket. Voici donc un petit guide qui devrait vous aider à mieux comprendre comment communiquer avec le backend.
 
 
 ## Scenario
 
-> Pour expliquer le fonctionnement du WebSocket, on va plutot essayer de raconter chronologiquement ce qu'il se passe et comment ça se passe.
+> Pour expliquer le fonctionnement du WebSocket, nous allons décrire chronologiquement ce qui se passe et comment cela se déroule.
 
 ### Connect
 
-Pour rejoindre une room simplement, il suffit (en websocket) de se connecter à l'url avec le room code en paramètre 
-(room code précédemment récupéré via l'api rest à cette url en post : `https://backend.rogueai.surpuissant.io/create-room`, pour + d'infos, rendez vous sur [l'api docs](https://backend.rogueai.surpuissant.io/api-docs)) 
+Pour rejoindre une salle, il suffit de se connecter à l'URL WebSocket avec le code de la salle en paramètre. 
+Le code de la salle est préalablement récupéré via l'API REST à cette URL en POST : `https://backend.rogueai.surpuissant.io/create-room`. Pour plus d'informations, consultez la [documentation de l'API](https://backend.rogueai.surpuissant.io/api-docs).
 ```
 wss://backend.rogueai.surpuissant.io/?room=${roomCode}
 ```
@@ -17,14 +78,14 @@ wss://backend.rogueai.surpuissant.io/?room=${roomCode}
 ### En salle d'attente
 
 #### Lobby Waiting
-Vous êtes maintenant connecté à une Room, et les messages que vous recevez vont ressemblez à ça :
+Vous êtes maintenant connecté à une salle, et les messages que vous recevez ressembleront à ceci :
 ```js
 {
     type: "game_state",
     payload: { state: "lobby_waiting" }
 }
 ```
-> Vous recevrez un message de type game_state à chaque fois que l'état de la room sera update ou qu'un nouveau joueur rejoindra la partie
+> Vous recevrez un message de type `game_state` à chaque fois que l'état de la salle sera mis à jour ou qu'un nouveau joueur rejoindra la partie.
 ```js
 {
     type: 'room_info',
@@ -45,23 +106,21 @@ Vous êtes maintenant connecté à une Room, et les messages que vous recevez vo
     }
 }
 ```
-> Vous recevrez un message room_info à chaque fois qu'un joueur va se connecter ou est ready, les noms des joueurs sont attribués automatiquement
+> Vous recevrez un message `room_info` à chaque fois qu'un joueur se connecte ou est prêt. Les noms des joueurs sont attribués automatiquement.
 
-Cela veut dire que la room est en attente et donc, que vous attendez quelqu'un pour pouvoir lancer la room.
-(Une partie ne peut pas se lancer à un seul joueur) Dans ce cas là, lancez un deuxième émulateur pour faire une deuxième connection.
-(ou émuler là avec un script)
+Cela signifie que la salle est en attente, et vous attendez quelqu'un pour pouvoir lancer la partie. 
+(Une partie ne peut pas commencer avec un seul joueur.) Dans ce cas, lancez un deuxième émulateur pour établir une deuxième connexion, ou simulez-la avec un script.
 
 #### Lobby Ready
 
-Une fois qu'un autre joueur rentre dans la room, vous recevrez un nouveau message :
+Une fois qu'un autre joueur entre dans la salle, vous recevrez un nouveau message :
 ```js
 {
     type: "game_state",
     payload: { state: "lobby_ready" }
 }
 ```
-> /!\ lobby_ready ne veut pas dire que tout le lobby est ready, il veut simplement dire que tout les joueurs peuvent se 
-> mettre en ready maintenant
+> /!\ `lobby_ready` ne signifie pas que tous les joueurs sont prêts, mais simplement que tous les joueurs peuvent maintenant se déclarer prêts. Les messages "ready" sont principalement utiles lorsque vous êtes dans le lobby pour indiquer votre état de préparation.
 ```js 
 {
     type: 'room_info',
@@ -87,20 +146,20 @@ Une fois qu'un autre joueur rentre dans la room, vous recevrez un nouveau messag
     }
 }
 ```
-> Vous recevez donc encore une fois les room_info
+> Vous recevez donc encore une fois les "room_info". Ce message est envoyé chaque fois qu'un joueur se connecte ou se met "ready".
 
-Maintenant c'est **aux joueurs** de déclarer si ils sont prêt ou non, pour ça, il suffit d'envoyer un message au websocket : 
+Maintenant, c'est **aux joueurs** de déclarer s'ils sont prêts ou non. Pour cela, il suffit d'envoyer un message au WebSocket : 
 ```js
 { 
     type: "room", 
     payload: { ready: true } 
 }
 ```
-> /!\ Les messages envoyés à un websocket doivent être transformé en string, pour ça : https://kotlinlang.org/docs/serialization.html#serialize-and-deserialize-json devrait vous aider
+> /!\ Les messages envoyés à un WebSocket doivent être transformés en chaîne de caractères. Pour cela, vous pouvez consulter : https://kotlinlang.org/docs/serialization.html#serialize-and-deserialize-json
 
 #### Timer
 
-Maintenant que tout les joueurs sont prêt, la partie va passer en état de timer.
+Maintenant que tous les joueurs sont prêts, la partie va passer en état de minuterie.
 
 ```js
 {
@@ -108,11 +167,11 @@ Maintenant que tout les joueurs sont prêt, la partie va passer en état de time
     payload: { state: "timer_before_start", duration: 3000 }
 }
 ```
-> On reçoit donc ce message, par défaut la durée du timer est de 3 secondes (3000 millisecondes)
+> Vous recevrez ce message. Par défaut, la durée de la minuterie est de 3 secondes (3000 millisecondes).
  
 ### Playing !
 
-Maintenant, le timer est fini =), on peut donc commencé la partie.
+Maintenant que la minuterie est terminée, vous pouvez commencer la partie.
 
 ```js
 {
@@ -123,9 +182,9 @@ Maintenant, le timer est fini =), on peut donc commencé la partie.
     }
 } 
 ```
-> Nouvelle valeur, le threat, allant de 0 à 100 (pour un soucis de précision), à 100, la partie est perdue, mais si le threat est en dessous de 100 au bout de 90 secondes, c'est gagné !
+> Nouvelle valeur : la menace, allant de 0 à 100 (pour des raisons de précision). À 100, la partie est perdue, mais si la menace est en dessous de 100 après 90 secondes, c'est gagné ! Le "player_board" n'est reçu que lorsque vous êtes dans le "PlayingState" de la salle.
 
-En prime, on reçoit des informations sur le "board" qu'on a (ce qu'on va appelé board, c'est le tableau qui contient toutes les commandes qu'on peut faire)
+En prime, vous recevez des informations sur le "tableau" que vous avez (ce que nous appelons tableau, c'est le tableau qui contient toutes les commandes que vous pouvez exécuter).
 ```js 
 {
     type: 'player_board',
@@ -180,11 +239,11 @@ En prime, on reçoit des informations sur le "board" qu'on a (ce qu'on va appel�
 }
 ```
 
-> Et donc ici, on a toutes les informations sur le board, les commandes qui nous sont disponible, notre instruction.
+> Ici, vous avez toutes les informations sur le tableau, les commandes disponibles, et votre instruction.
 > 
-> Petite précision : la Slider command gère dynamiquement les possibilités, ce qui veut dire que le composant devra s'adapter aux nombre de possibilités !
+> Petite précision : la commande Slider gère dynamiquement les possibilités, ce qui signifie que le composant devra s'adapter au nombre de possibilités !
 
-Et donc maintenant pour executer une action côté user, il suffit d'envoyer un message au websocket :
+Pour exécuter une action côté utilisateur, il suffit d'envoyer un message au WebSocket :
 
 ```js
 {
@@ -196,7 +255,7 @@ Et donc maintenant pour executer une action côté user, il suffit d'envoyer un 
 }
 ```
 
-Ce qui va effectuer l'action, pour les Slider, c'est pareil : 
+Cela exécutera l'action. Pour les commandes Slider, c'est pareil : 
 
 ```js
 {
@@ -208,11 +267,11 @@ Ce qui va effectuer l'action, pour les Slider, c'est pareil :
 }
 ```
 
-Et donc une fois la partie terminée au bout des 90 secondes ou simplement si elle est perdue
+Une fois la partie terminée après 90 secondes ou si elle est perdue, vous recevrez :
 
 ### Partie terminée
 
-Maintenant la partie est terminée on reçoit ça : 
+Maintenant que la partie est terminée, vous recevrez ceci : 
 ```js
 {
     type: "game_state",
@@ -230,10 +289,10 @@ Maintenant la partie est terminée on reçoit ça :
 }
 ```
 
-> On reçoit aussi si la partie est gagnée ou perdue ! avec aussi une donnée intéressante, l'historique de try, possibilité donc de faire un peu de DataViz (un petit graph ?)
+> Vous recevrez également l'information si la partie est gagnée ou perdue, ainsi qu'une donnée intéressante : l'historique des tentatives, ce qui permet de faire un peu de DataViz (un petit graphique ?).
 
-Après ça, tu peux renvoyer un message pour dire que tu es ready et la room se remettra à son state de ReadyState ou FullState ou WaitingState (en fonction du nombre du joueur présent)
+Après cela, vous pouvez renvoyer un message pour indiquer que vous êtes prêt, et la salle reviendra à son état de ReadyState, FullState ou WaitingState (en fonction du nombre de joueurs présents).
 
-## DISCLAIMER
+## EDIT
 
-Le serveur peut ne pas être parfait // manquer de features, toute PR sont les bienvenues
+Le serveur peut ne pas être parfait ou manquer de fonctionnalités. Toutes les PR sont les bienvenues.
