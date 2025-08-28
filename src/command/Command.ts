@@ -1,3 +1,5 @@
+import {CommandBoard} from "./CommandBoard";
+
 export abstract class Command {
     public id: string;
     public abstract status: string;
@@ -17,8 +19,13 @@ export class Instruction {
 
     public toObject(): Object {
         return {
+            "command_id": this.command.id,
             "command_type": this.command.getType(),
             "instruction_text": this.text,
         }
+    }
+
+    public isComplete(): boolean {
+        return this.command.status === this.expectedStatus;
     }
 }

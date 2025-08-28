@@ -18,9 +18,8 @@ export class CommandBoard {
         );
     }
 
-    public setInstruction(): void {
-        const index = Math.floor(Math.random() * this.commands.length);
-        this.instruction = this.commands[index].getInstruction();
+    public setInstruction(instruction: Instruction): void {
+        this.instruction = instruction;
     }
 
     public addCommand(command: Command): void {
@@ -41,9 +40,6 @@ export class CommandBoard {
         commandBoard.addCommand(CommandFactory.getRandomCommand())
         commandBoard.addCommand(CommandFactory.getRandomCommand())
         commandBoard.addCommand(CommandFactory.getRandomCommand())
-
-        // Set l'instruction de cette manière, pour l'instant OK, après extends it
-        commandBoard.setInstruction()
 
         return commandBoard;
     }
