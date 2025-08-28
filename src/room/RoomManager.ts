@@ -1,5 +1,6 @@
-import { Room } from './Room';
+import {Room, RoomRule} from './Room';
 import { Player } from '../player/Player';
+import {CommandConstructor} from "../command/Command";
 
 export class RoomManager {
     private static instance: RoomManager;
@@ -14,13 +15,13 @@ export class RoomManager {
         return RoomManager.instance;
     }
 
-    createRoom(): string {
+    createRoom(onlyCommandType: CommandConstructor | null = null): string {
         let code: string;
         do {
             code = Math.random().toString(36).slice(2, 8).toUpperCase();
         } while (this.rooms.has(code));
 
-        this.rooms.set(code, new Room(code));
+        this.rooms.set(code, new Room(code, new RoomRule(onlyCommandType)));
         return code;
     }
 

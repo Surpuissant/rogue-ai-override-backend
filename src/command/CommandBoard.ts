@@ -1,4 +1,4 @@
-import { Command } from "./Command";
+import { Command, CommandConstructor } from "./Command";
 import { CommandFactory } from "./CommandFactory";
 import { Instruction } from "./Instruction";
 
@@ -30,7 +30,7 @@ export class CommandBoard {
         }
     }
 
-    static createCommandBoard(otherBoards: CommandBoard[]) {
+    static createCommandBoard(otherBoards: CommandBoard[], onlyCommandType: CommandConstructor | null) {
         const commandBoard = new CommandBoard();
         const existingIds = new Set<string>();
 
@@ -39,7 +39,7 @@ export class CommandBoard {
         });
 
         for (let i = 0; i < 4; i++) {
-            const command = CommandFactory.getRandomCommand(Array.from(existingIds));
+            const command = CommandFactory.getRandomCommand(Array.from(existingIds), onlyCommandType);
             commandBoard.addCommand(command);
             existingIds.add(command.id);
         }

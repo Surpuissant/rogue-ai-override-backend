@@ -4,6 +4,7 @@ import { Server } from "../../src/server/Server";
 import { setTimeout as wait } from 'node:timers/promises';
 // @ts-ignore
 import WebSocket from "ws";
+import {ToggleCommand} from "../../src/command/ToggleCommand";
 
 let server: Server;
 const TEST_PORT = 3015;
@@ -44,7 +45,7 @@ beforeAll(async () => {
     server = Server.getInstance(TEST_PORT);
     server.start();
 
-    roomCode = server.roomManager.createRoom();
+    roomCode = server.roomManager.createRoom(ToggleCommand);
     room = server.roomManager.getRoom(roomCode);
 
     player1ws = await connectPlayer(roomCode, TEST_PORT, (data: any) => {

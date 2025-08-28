@@ -1,15 +1,21 @@
 import { Player } from '../player/Player';
 import { RoomState } from "./roomState/RoomState";
 import { WaitingState } from "./roomState/WaitingState";
+import {CommandConstructor} from "../command/Command";
+
+export class RoomRule {
+    public constructor(public onlyCommandType: CommandConstructor | null) { }
+}
 
 export class Room {
     private readonly code: string;
     public players: Player[] = [];
-    private state: RoomState;
+    public state: RoomState;
     public readonly MIN_PLAYERS = 2;
     public readonly MAX_PLAYERS = 6;
 
-    constructor(code: string) {
+    // RoomRule permet de si on le souhaite, avoir une room avec qu'un certain type de command type
+    constructor(code: string, public roomRule: RoomRule = new RoomRule(null)) {
         this.code = code;
         this.state = new WaitingState(this);
     }

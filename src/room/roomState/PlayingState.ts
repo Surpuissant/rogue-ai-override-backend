@@ -37,7 +37,7 @@ export class PlayingState implements RoomState {
     public createCommandBoard() {
         this.room.players.forEach(player => {
             const commandBoard =
-                CommandBoard.createCommandBoard(Array.from(this.commandPlayer.values()));
+                CommandBoard.createCommandBoard(Array.from(this.commandPlayer.values()), this.room.roomRule.onlyCommandType);
             this.commandPlayer.set(player, commandBoard);
         });
     }

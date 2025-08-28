@@ -1,8 +1,8 @@
-import { Command } from "./Command";
+import {Command, CommandConstructor} from "./Command";
 import { ToggleCommand } from "./ToggleCommand";
 
 export class CommandFactory {
-    public static getRandomCommand(exceptIds: string[] = []): Command {
+    public static getRandomCommand(exceptIds: string[] = [], onlyCommandType: CommandConstructor | null): Command {
         const commands = [
             new ToggleCommand("Filtre d'hallucination", "hallucination_filter"),
             new ToggleCommand("Mode créativité", "creative_mode"),
@@ -45,7 +45,8 @@ export class CommandFactory {
             new ToggleCommand("Mode transparence", "transparency_mode")
         ];
 
-        const filteredCommands = commands.filter(cmd => !exceptIds.includes(cmd.id));
+        let filteredCommands = commands.filter(cmd => !exceptIds.includes(cmd.id));
+        if(onlyCommandType !== null) filteredCommands.filter(cmd => cmd instanceof onlyCommandType);
 
         if (filteredCommands.length === 0) {
             throw new Error("Aucune commande disponible, tous les IDs sont exclus !");

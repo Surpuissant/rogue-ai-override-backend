@@ -10,3 +10,6 @@ export abstract class Command {
     public abstract getInstruction(): Instruction;
     public abstract toObject(): object;
 }
+
+// Pratique pour juste faire passer des types en paramètres de fonction
+export type CommandConstructor<T = any> = new (...args: any[]) => T;
