@@ -11,8 +11,6 @@ export class Room {
     private readonly code: string;
     public players: Player[] = [];
     public state: RoomState;
-    public readonly MIN_PLAYERS = 2;
-    public readonly MAX_PLAYERS = 6;
 
     // RoomRule permet de si on le souhaite, avoir une room avec qu'un certain type de command type
     constructor(code: string, public roomRule: RoomRule = new RoomRule(null)) {

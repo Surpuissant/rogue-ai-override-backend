@@ -19,6 +19,7 @@ export class PlayingState implements RoomState {
     private tryHistory: TryAttempt[] = [];
 
     public constructor(private room: Room) {
+        room.players.forEach(player => { player.setReady(false) })
         this.gameStartTime = Date.now();
         this.createCommandBoard();
         this.room.players.forEach(player => {

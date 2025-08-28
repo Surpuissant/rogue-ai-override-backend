@@ -56,7 +56,9 @@ beforeAll(async () => {
             boardCommandP1 = data.payload.board.commands;
         }
         if(data.type === "game_state") {
-            if(data.payload.state === "end_state") win = data.payload.win
+            if(data.payload.state === "end_state") {
+                win = data.payload.win
+            }
         }
     });
 

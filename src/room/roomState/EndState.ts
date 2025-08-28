@@ -2,6 +2,8 @@ import { RoomState } from "./RoomState";
 import { Player } from "../../player/Player";
 import { Room } from "../Room";
 import { TryAttempt } from "./PlayingState";
+import {ReadyState} from "./ReadyState";
+import {WaitingState} from "./WaitingState";
 
 export class EndState implements RoomState {
     public constructor(private room: Room, private win: boolean, tryHistory: TryAttempt[]) {
@@ -34,6 +36,7 @@ export class EndState implements RoomState {
     }
 
     onPlayerReady(player: Player): void {
+        this.room.setState(new WaitingState(this.room))
     }
 
     removePlayer(player: Player): void {
