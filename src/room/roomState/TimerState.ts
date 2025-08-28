@@ -28,8 +28,6 @@ export class TimerState implements RoomState {
     }
 
     removePlayer(player: Player): void {
-        this.room.players = this.room.players.filter(p => p !== player);
-
         // If someone leaves during the timer, cancel it and go back to WaitingState
         if (this.timer) {
             clearTimeout(this.timer);

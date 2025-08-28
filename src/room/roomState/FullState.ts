@@ -19,7 +19,6 @@ export class FullState implements RoomState {
     }
 
     removePlayer(player: Player): void {
-        this.room.players = this.room.players.filter(p => p !== player);
         this.room.setState(new ReadyState(this.room));
     }
 

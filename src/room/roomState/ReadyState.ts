@@ -26,7 +26,6 @@ export class ReadyState implements RoomState {
     }
 
     removePlayer(player: Player): void {
-        this.room.players = this.room.players.filter(p => p !== player);
         if (this.room.players.length < this.room.MIN_PLAYERS) {
             this.room.setState(new WaitingState(this.room));
         }

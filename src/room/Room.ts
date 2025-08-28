@@ -35,6 +35,7 @@ export class Room {
     }
 
     removePlayer(player: Player) {
+        this.players = this.players.filter(p => p !== player);
         this.state.removePlayer(player); // Adapter les states pour Player
     }
 

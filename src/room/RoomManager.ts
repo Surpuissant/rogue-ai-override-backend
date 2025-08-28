@@ -1,10 +1,11 @@
 import { Room } from './Room';
 import { Player } from '../player/Player';
 import WebSocket from 'ws';
+import {Logger} from "../utils/Logger";
 
 export class RoomManager {
     private static instance: RoomManager;
-    private rooms: Map<string, Room> = new Map();
+    public rooms: Map<string, Room> = new Map();
 
     private constructor() {}
 

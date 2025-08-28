@@ -104,7 +104,6 @@ export class PlayingState implements RoomState {
     addPlayer(player: Player): boolean { return false; }
 
     removePlayer(player: Player): void {
-        this.room.players = this.room.players.filter(p => p !== player);
         const board = this.commandPlayer.get(player);
         if (board && board.instructionInterval) clearInterval(board.instructionInterval);
         this.commandPlayer.delete(player);

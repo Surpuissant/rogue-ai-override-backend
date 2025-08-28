@@ -134,10 +134,7 @@ describe("Game flow tests", () => {
         expect(globalThreat).toBe(25);
     });
 
-
-
     test("Verify game is loosable", async () => {
-
         for (let i = 0; i < 15; i++) {
             player2ws.send(JSON.stringify({
                 type: "execute_action",
@@ -152,6 +149,13 @@ describe("Game flow tests", () => {
         console.warn(room?.getStateName())
         console.warn(globalThreat)
         expect(room?.getStateName()).toBe("end");
-    });
 
+        console.warn(server.roomManager)
+
+        expect(server.roomManager.rooms.size).toBe(1);
+        player1ws.close();
+        player2ws.close();
+        await wait(200);
+        expect(server.roomManager.rooms.size).toBe(0);
+    });
 });
