@@ -232,3 +232,8 @@ Maintenant la partie est terminée on reçoit ça :
 
 > On reçoit aussi si la partie est gagnée ou perdue ! avec aussi une donnée intéressante, l'historique de try, possibilité donc de faire un peu de DataViz (un petit graph ?)
 
+Après ça, tu peux renvoyer un message pour dire que tu es ready et la room se remettra à son state de ReadyState ou FullState ou WaitingState (en fonction du nombre du joueur présent)
+
+## DISCLAIMER
+
+Le serveur peut ne pas être parfait // manquer de features, toute PR sont les bienvenues

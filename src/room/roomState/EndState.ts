@@ -4,6 +4,8 @@ import { Room } from "../Room";
 import { TryAttempt } from "./PlayingState";
 import {ReadyState} from "./ReadyState";
 import {WaitingState} from "./WaitingState";
+import CONFIG from "../../Config";
+import {FullState} from "./FullState";
 
 export class EndState implements RoomState {
     public constructor(private room: Room, private win: boolean, tryHistory: TryAttempt[]) {
@@ -36,7 +38,15 @@ export class EndState implements RoomState {
     }
 
     onPlayerReady(player: Player): void {
-        this.room.setState(new WaitingState(this.room))
+        // Swap pour revenir à un state normal
+
+        if(this.room.getPlayerCount() >= CONFIG.ROOM_MAX_PLAYERS){
+            this.room.setState(new FullState(this.room))
+        } else if(this.room.getPlayerCount() >= CONFIG.ROOM_MIN_PLAYERS){
+            this.room.setState(new ReadyState(this.room))
+        } else if(this.room.getPlayerCount() <= 1){
+            this.room.setState(new WaitingState(this.room))
+        }
     }
 
     removePlayer(player: Player): void {

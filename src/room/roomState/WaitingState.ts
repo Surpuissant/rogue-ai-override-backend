@@ -10,9 +10,6 @@ export class WaitingState implements RoomState {
             type: "game_state",
             payload: { state: "lobby_waiting" }
         });
-        if(this.room.getPlayerCount() >= CONFIG.ROOM_MIN_PLAYERS){
-            this.room.setState(new ReadyState(this.room))
-        }
     };
 
     getName() { return "waiting"; }
