@@ -4,9 +4,9 @@
 ## Serveur de production
 
 Le serveur est déjà déployé et accessible à l'adresse :
-**https://backend.rogue.surpuissant.io/**
+**https://backend.rogueai.surpuissant.io/**
 
-**Documentation de l'API REST** : https://backend.rogue.surpuissant.io/api-docs
+**Documentation de l'API REST** : https://backend.rogueai.surpuissant.io/api-docs
 
 ## Installation locale
 
