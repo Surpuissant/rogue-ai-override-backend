@@ -29,17 +29,17 @@ export class Player {
     }
 
     onMessage(data: any) {
-        // Déclenche l'évenement onPlayerMessage et après check le message
-        this.room?.onPlayerMessage(this, data);
-
         try {
             // Process player message
             switch(data.type) {
                 case 'room':
                     this.setReady(data.payload.ready)
                     break;
+                case 'execute_action':
+                    this.room?.onPlayerMessage(this, data);
+                    break;
                 default:
-                    Logger.warn("Unknown type of message in Player on Message" + data.type);
+                    Logger.warn(`Unknown type of message in Player on Message '${data.type}'`);
                     break;
             }
         } catch (err) {

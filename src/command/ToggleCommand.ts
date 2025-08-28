@@ -1,8 +1,9 @@
-import {Command} from "./Command";
+import {Command, Instruction} from "./Command";
 import {Logger} from "../utils/Logger";
 
 export class ToggleCommand extends Command {
-    public isActive: boolean = false;
+    public status: string = "inactive";
+    private isActive = () => this.status === "active";
 
     public constructor (name: string) {
         super(name);
@@ -11,7 +12,7 @@ export class ToggleCommand extends Command {
     public execute(action: string): void {
         switch (action) {
             case "toggle":
-                this.isActive = !(this.isActive);
+                this.status = this.isActive() ? "inactive" : "active";
                 break;
             default:
                 Logger.error(`Toggle command ${action} doesn't exist there`);
@@ -20,12 +21,22 @@ export class ToggleCommand extends Command {
         return
     }
 
+    public getInstruction(): Instruction {
+        return new Instruction(
+            this,
+            this.isActive() ? "inactive" : "active",
+            this.isActive() ? `Désactivez le ${this.name}` : `Activez le ${this.name}`
+        );
+    }
+
+    public getType(): string { return "toggle" }
+
     public toObject(): object {
         return {
             "id": this.id,
             "name": this.name,
-            "type": "toggle",
-            "actual_status": this.isActive ? "active" : "inactive",
+            "type": this.getType(),
+            "actual_status": this.status,
             "action_possible": ["toggle"]
         };
     }

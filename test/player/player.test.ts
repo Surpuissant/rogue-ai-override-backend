@@ -17,7 +17,7 @@ afterAll(() => {
     server.server.close()
 })
 
-const connectPlayer = (roomCode: string, port: number) =>
+const connectPlayer = (roomCode: string, port: number, messageCb: any) =>
     new Promise<WebSocket>((resolve, reject) => {
         const ws = new WebSocket(`ws://localhost:${port}/?room=${roomCode}`);
 
@@ -34,7 +34,7 @@ const connectPlayer = (roomCode: string, port: number) =>
         ws.on('message', (message) => {
             const str = message.toString();
             const data = JSON.parse(str);
-            console.log("Message reçu:", data);
+            messageCb(data)
         })
 
         ws.on('error', (err) => reject(err));
@@ -48,8 +48,21 @@ describe("Player joins room and create one", () => {
         expect(room).toBeDefined();
         expect(room!.getStateName()).toBe("waiting");
 
-        let player1ws = await connectPlayer(roomCode, TEST_PORT);
-        let player2ws = await connectPlayer(roomCode, TEST_PORT);
+        let boardCommandP1: any[] = [];
+        let boardCommandP2: any[] = [];
+        const p1cb = (data: any) => {
+            if(data.type === "player_board") {
+                console.warn(data.payload)
+                boardCommandP1 = data.payload.board.commands
+            }
+        }
+        let player1ws = await connectPlayer(roomCode, TEST_PORT, p1cb);
+        const p2cb = (data: any) => {
+            if(data.type === "player_board") {
+                boardCommandP2 = data.payload.board.commands
+            }
+        }
+        let player2ws = await connectPlayer(roomCode, TEST_PORT, p2cb);
 
         expect(room!.getStateName()).toBe("ready");
 
@@ -65,12 +78,40 @@ describe("Player joins room and create one", () => {
             JSON.stringify({ type: "room", payload: { ready: true } })
         )
 
-        await wait(1000)
+        await wait(500)
 
         expect(room!.players.filter(p => p.ready).length).toBe(2);
         expect(room!.getStateName()).toBe("timer");
         await wait(3000)
         expect(room!.getStateName()).toBe("playing");
+        // Il devrait y avoir au moins 1 commande ^^'
+        expect(boardCommandP1.length).toBe(4);
+        expect(boardCommandP2.length).toBe(4);
+
+        player1ws.send(
+            JSON.stringify({ type: "execute_action", payload: {
+                    "command_id": boardCommandP1[0].id,
+                    "action": "toggle"
+                }
+            })
+        )
+        await wait(200)
+
+        // Normalement, on a activé juste avant le levier donc ça devrait être top
+        expect(boardCommandP1[0].actual_status).toBe('active');
+
+        player1ws.send(
+            JSON.stringify({ type: "execute_action", payload: {
+                    "command_id": boardCommandP1[0].id,
+                    "action": "toggle"
+                }
+            })
+        )
+        await wait(200)
+
+        // Et là, magie, il est baissé
+        expect(boardCommandP1[0].actual_status).toBe('inactive');
+
 
     }, 30000);
 });
