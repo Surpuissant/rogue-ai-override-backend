@@ -3,7 +3,7 @@ import { RoomState } from "./roomState/RoomState";
 import { WaitingState } from "./roomState/WaitingState";
 
 export class Room {
-    private code: string;
+    private readonly code: string;
     public players: Player[] = [];
     private state: RoomState;
     public readonly MIN_PLAYERS = 2;
@@ -50,7 +50,7 @@ export class Room {
 
     broadcastInfoOfAllPlayers() {
         this.players.forEach(player => {
-            var raw_ws_message = {
+            const raw_ws_message = {
                 "type": "room_info",
                 "payload": {
                     "you": player.toObject(),
@@ -73,5 +73,9 @@ export class Room {
 
     startGame(): boolean {
         return this.state.startGame();
+    }
+
+    isEveryPlayerReady(): boolean {
+        return this.players.every(p => p.ready);
     }
 }

@@ -1,6 +1,6 @@
 import { RoomState } from "./RoomState";
-import {Player} from "../../player/Player";
-import {Room} from "../Room";
+import { Player } from "../../player/Player";
+import { Room } from "../Room";
 
 export class EndState implements RoomState {
     public constructor(private room: Room, private win: boolean) {

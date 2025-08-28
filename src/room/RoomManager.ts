@@ -1,7 +1,5 @@
 import { Room } from './Room';
 import { Player } from '../player/Player';
-import WebSocket from 'ws';
-import {Logger} from "../utils/Logger";
 
 export class RoomManager {
     private static instance: RoomManager;
@@ -19,7 +17,7 @@ export class RoomManager {
     createRoom(): string {
         let code: string;
         do {
-            code = Math.random().toString(36).substr(2, 6).toUpperCase();
+            code = Math.random().toString(36).slice(2, 8).toUpperCase();
         } while (this.rooms.has(code));
 
         this.rooms.set(code, new Room(code));

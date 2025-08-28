@@ -3,8 +3,7 @@ import { Room } from "../Room";
 import { Player } from "../../player/Player";
 import { CommandBoard } from "../../command/CommandBoard";
 import { Logger } from "../../utils/Logger";
-import {TimerState} from "./TimerState";
-import {EndState} from "./EndState";
+import { EndState } from "./EndState";
 
 export class PlayingState implements RoomState {
     private threat: number = 30;

@@ -2,7 +2,7 @@ import http from 'http';
 import { RoomManager } from '../room/RoomManager';
 import { RestServer } from './RestServer';
 import { WebSocketServer } from './WebSocketServer';
-import {Logger} from "../utils/Logger";
+import { Logger } from "../utils/Logger";
 
 export class Server {
     private static instance: Server;

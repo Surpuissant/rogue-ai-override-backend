@@ -1,5 +1,6 @@
-import {Command, Instruction} from "./Command";
-import {CommandFactory} from "./CommandFactory";
+import { Command } from "./Command";
+import { CommandFactory } from "./CommandFactory";
+import { Instruction } from "./Instruction";
 
 export class CommandBoard {
     public commands: Command[] = [];

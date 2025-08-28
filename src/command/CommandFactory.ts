@@ -1,5 +1,5 @@
-import {Command} from "./Command";
-import {ToggleCommand} from "./ToggleCommand";
+import { Command } from "./Command";
+import { ToggleCommand } from "./ToggleCommand";
 
 export class CommandFactory {
     public static getRandomCommand(exceptIds: string[] = []): Command {

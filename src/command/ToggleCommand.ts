@@ -1,5 +1,6 @@
-import {Command, Instruction} from "./Command";
-import {Logger} from "../utils/Logger";
+import { Command } from "./Command";
+import { Logger } from "../utils/Logger";
+import { Instruction } from "./Instruction";
 
 export class ToggleCommand extends Command {
     public status: string = "inactive";

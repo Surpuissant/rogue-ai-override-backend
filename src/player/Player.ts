@@ -1,6 +1,6 @@
 import WebSocket from "ws";
-import {Room} from "../room/Room";
-import {Logger} from "../utils/Logger";
+import { Room } from "../room/Room";
+import { Logger } from "../utils/Logger";
 
 const NAMES = [
     "Nova",

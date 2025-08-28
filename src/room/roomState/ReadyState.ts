@@ -4,7 +4,7 @@ import { Player } from "../../player/Player";
 import { WaitingState } from "./WaitingState";
 import { FullState } from "./FullState";
 import { PlayingState } from "./PlayingState";
-import {TimerState} from "./TimerState";
+import { TimerState } from "./TimerState";
 
 export class ReadyState implements RoomState {
     constructor(private room: Room){
@@ -37,9 +37,7 @@ export class ReadyState implements RoomState {
     }
 
     onPlayerReady(player: Player): void {
-        // Si le joueur ainsi que tout les autres sont ready, alors on peut lancé la partie
-        var isEveryPlayerReady = this.room.players.every(p => p.ready);
-        if(isEveryPlayerReady) {
+        if(this.room.isEveryPlayerReady()) {
             this.room.setState(new TimerState(this.room))
         }
     }

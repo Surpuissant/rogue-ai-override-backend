@@ -2,7 +2,7 @@ import WebSocket, { Server as WebSocketServerType } from 'ws';
 import { RoomManager } from '../room/RoomManager';
 import { Player } from '../player/Player';
 import http from 'http';
-import {Logger} from "../utils/Logger";
+import { Logger } from "../utils/Logger";
 
 export class WebSocketServer {
     private wss: WebSocketServerType;

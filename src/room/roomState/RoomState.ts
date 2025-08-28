@@ -1,4 +1,3 @@
-import { Room } from "../Room";
 import { Player } from "../../player/Player";
 
 export interface RoomState {
