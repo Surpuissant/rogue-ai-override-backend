@@ -5,6 +5,7 @@ import { WaitingState } from "./WaitingState";
 import { FullState } from "./FullState";
 import { PlayingState } from "./PlayingState";
 import { TimerState } from "./TimerState";
+import CONFIG from "../../Config";
 
 export class ReadyState implements RoomState {
     constructor(private room: Room){
@@ -17,16 +18,16 @@ export class ReadyState implements RoomState {
     getName() { return "ready"; }
 
     addPlayer(player: Player): boolean {
-        if (this.room.players.length >= this.room.MAX_PLAYERS) return false;
+        if (this.room.players.length >= CONFIG.ROOM_MAX_PLAYERS) return false;
         this.room.players.push(player);
-        if (this.room.players.length === this.room.MAX_PLAYERS) {
+        if (this.room.players.length === CONFIG.ROOM_MAX_PLAYERS) {
             this.room.setState(new FullState(this.room));
         }
         return true;
     }
 
     removePlayer(player: Player): void {
-        if (this.room.players.length < this.room.MIN_PLAYERS) {
+        if (this.room.players.length < CONFIG.ROOM_MIN_PLAYERS) {
             this.room.setState(new WaitingState(this.room));
         }
     }

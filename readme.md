@@ -14,12 +14,14 @@ Le serveur est déjà déployé et accessible à l'adresse :
 - [Node.js 22.13.1](https://nodejs.org/) (⚠️ utilise bien cette version pour éviter les soucis de compatibilité)
 - [npm](https://www.npmjs.com/) (fourni avec Node.js)
 
+> Ou sinon, utilisez [nvm](https://github.com/nvm-sh/nvm) (`brew install nvm` + `nvm use --lts`)
+
 ### Étapes
 
 1. **Cloner le dépôt**
    ```bash
-   git clone https://github.com/<ton-org>/<ton-repo>.git
-   cd <ton-repo>
+   https://github.com/Surpuissant/rogue-ai-override-backend.git
+   cd rogue-ai-override-backend
    ```
 
 2. **Installer les dépendances**
