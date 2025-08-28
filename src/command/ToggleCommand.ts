@@ -4,7 +4,7 @@ import {Logger} from "../utils/Logger";
 export class ToggleCommand extends Command {
     public isActive: boolean = false;
 
-    constructor(name: string) {
+    public constructor (name: string) {
         super(name);
     }
 

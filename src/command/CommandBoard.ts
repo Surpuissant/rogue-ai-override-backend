@@ -1,5 +1,6 @@
 import {Command} from "./Command";
 import {ToggleCommand} from "./ToggleCommand";
+import {CommandFactory} from "./CommandFactory";
 
 export class CommandBoard {
     public commands: Command[] = [];
@@ -16,10 +17,10 @@ export class CommandBoard {
         let commandBoard = new CommandBoard();
 
         // Actuellement, il n'y a que 4 commandes par board, déja bien !
-        commandBoard.addCommand(Command.getRandomCommand())
-        commandBoard.addCommand(Command.getRandomCommand())
-        commandBoard.addCommand(Command.getRandomCommand())
-        commandBoard.addCommand(Command.getRandomCommand())
+        commandBoard.addCommand(CommandFactory.getRandomCommand())
+        commandBoard.addCommand(CommandFactory.getRandomCommand())
+        commandBoard.addCommand(CommandFactory.getRandomCommand())
+        commandBoard.addCommand(CommandFactory.getRandomCommand())
 
         return commandBoard;
     }
