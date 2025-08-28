@@ -1,6 +1,6 @@
 import { Command } from "./Command";
 import { Logger } from "../utils/Logger";
-import { Instruction } from "./Instruction";
+import { Instruction } from "./board/Instruction";
 
 export class ToggleCommand extends Command {
     public status: string = "inactive";

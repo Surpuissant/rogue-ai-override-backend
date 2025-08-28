@@ -1,5 +1,5 @@
-import { Command, CommandConstructor } from "./Command";
-import { CommandFactory } from "./CommandFactory";
+import { Command, CommandConstructor } from "../Command";
+import { CommandFactory } from "../factory/CommandFactory";
 import { Instruction } from "./Instruction";
 
 export class CommandBoard {

@@ -1,7 +1,7 @@
-import { Command, CommandConstructor } from "./Command";
-import { ToggleCommand } from "./ToggleCommand";
-import { SliderCommand } from "./SliderCommand";
-import { Logger } from "../utils/Logger";
+import { Command, CommandConstructor } from "../Command";
+import { ToggleCommand } from "../ToggleCommand";
+import { SliderCommand } from "../SliderCommand";
+import { Logger } from "../../utils/Logger";
 
 export class CommandFactory {
     public static getRandomCommand(exceptIds: string[] = [], onlyCommandType: CommandConstructor | null): Command {

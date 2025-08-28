@@ -5,7 +5,7 @@ import { setTimeout as wait } from 'node:timers/promises';
 // @ts-ignore
 import WebSocket from "ws";
 import { PlayingState } from "../../src/room/roomState/PlayingState";
-import {SliderCommand} from "../../src/command/SliderCommand";
+import { SliderCommand } from "../../src/command/SliderCommand";
 
 let server: Server;
 const TEST_PORT = 3022;

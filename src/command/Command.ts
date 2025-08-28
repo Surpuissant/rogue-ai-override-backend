@@ -1,4 +1,4 @@
-import { Instruction } from "./Instruction";
+import { Instruction } from "./board/Instruction";
 
 export abstract class Command {
     public abstract status: string;

@@ -5,6 +5,7 @@ import { setTimeout as wait } from 'node:timers/promises';
 // @ts-ignore
 import WebSocket from "ws";
 import {ToggleCommand} from "../../src/command/ToggleCommand";
+import CONFIG from "../../src/Config";
 
 let server: Server;
 const TEST_PORT = 3011;

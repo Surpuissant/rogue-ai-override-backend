@@ -1,7 +1,7 @@
 import { RoomState } from "./RoomState";
 import { Room } from "../Room";
 import { Player } from "../../player/Player";
-import { CommandBoard } from "../../command/CommandBoard";
+import { CommandBoard } from "../../command/board/CommandBoard";
 import { Logger } from "../../utils/Logger";
 import { EndState } from "./EndState";
 

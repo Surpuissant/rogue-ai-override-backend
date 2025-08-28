@@ -1,7 +1,8 @@
-import { Command } from "./Command";
+import { Command } from "../Command";
+import CONFIG from "../../Config";
 
 export class Instruction {
-    public timeout: number = 3000;
+    public timeout: number = CONFIG.timeout;
     public timestampCreation: number;
 
     constructor(public command: Command, public expectedStatus: string, public text: string) {

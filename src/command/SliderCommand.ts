@@ -1,7 +1,9 @@
 import { Command } from "./Command";
 import { Logger } from "../utils/Logger";
-import { Instruction } from "./Instruction";
+import { Instruction } from "./board/Instruction";
 
+// ! Attention, ce slider va de 1 en 1, pas de float !!!!!
+// C'est donc un IntegerSlider !
 export class SliderCommand extends Command {
     public status: string = "0";
 
