@@ -21,17 +21,25 @@ export class Player {
         this.id = crypto.randomUUID();
     }
 
-    setRoom(room: Room) {
-        this.room = room
-    }
-
     setReady(isReady: boolean) {
         this.ready = isReady;
         this.room?.broadcastInfoOfAllPlayers();
         this.room?.onPlayerReady(this);
     }
 
-    isReady(): boolean {
-        return this.ready;
+    onMessage(data: any) {
+        // Déclenche l'évenement onPlayerMessage et après check le message
+        this.room?.onPlayerMessage(this, data);
+
+        try {
+            // Process player message
+            switch(data.type) {
+                case 'room':
+                    this.setReady(data.payload.ready)
+                    break;
+            }
+        } catch (err) {
+            console.error('Message parsing error:', err);
+        }
     }
 }

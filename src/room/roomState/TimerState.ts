@@ -23,11 +23,11 @@ export class TimerState implements RoomState {
     }
 
     // Nobody can join during the timer
-    addClient(player: Player): boolean {
+    addPlayer(player: Player): boolean {
         return false; // reject new connections
     }
 
-    removeClient(player: Player): void {
+    removePlayer(player: Player): void {
         this.room.players = this.room.players.filter(p => p !== player);
 
         // If someone leaves during the timer, cancel it and go back to WaitingState
@@ -49,5 +49,9 @@ export class TimerState implements RoomState {
 
     onPlayerReady(player: Player): void {
         // Nothing can happens here normally
+    }
+
+    onPlayerMessage(player: Player, message: any): void {
+
     }
 }

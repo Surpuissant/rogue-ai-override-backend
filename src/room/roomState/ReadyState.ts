@@ -16,7 +16,7 @@ export class ReadyState implements RoomState {
 
     getName() { return "ready"; }
 
-    addClient(player: Player): boolean {
+    addPlayer(player: Player): boolean {
         if (this.room.players.length >= this.room.MAX_PLAYERS) return false;
         this.room.players.push(player);
         if (this.room.players.length === this.room.MAX_PLAYERS) {
@@ -25,7 +25,7 @@ export class ReadyState implements RoomState {
         return true;
     }
 
-    removeClient(player: Player): void {
+    removePlayer(player: Player): void {
         this.room.players = this.room.players.filter(p => p !== player);
         if (this.room.players.length < this.room.MIN_PLAYERS) {
             this.room.setState(new WaitingState(this.room));
@@ -43,5 +43,9 @@ export class ReadyState implements RoomState {
         if(isEveryPlayerReady) {
             this.room.setState(new TimerState(this.room))
         }
+    }
+
+    onPlayerMessage(player: Player, message: any): void {
+
     }
 }

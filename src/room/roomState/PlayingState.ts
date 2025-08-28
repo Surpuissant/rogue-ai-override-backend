@@ -3,22 +3,22 @@ import { Room } from "../Room";
 import { Player } from "../../player/Player";
 
 export class PlayingState implements RoomState {
+    private threat: number = 0.3;
+
     public constructor(private room: Room) {
         room.broadcast({
             "type": "game_state",
-            "payload": {
-                "state": "game_start"
-            }
+            "payload": { "state": "game_start" }
         })
     }
 
     getName() { return "playing"; }
 
-    addClient(player: Player): boolean {
+    addPlayer(player: Player): boolean {
         return false; // pas d’ajout en cours de partie
     }
 
-    removeClient(player: Player): void {
+    removePlayer(player: Player): void {
         this.room.players = this.room.players.filter(p => p !== player);
     }
 
@@ -28,5 +28,9 @@ export class PlayingState implements RoomState {
 
     onPlayerReady(player: Player): void {
         return
+    }
+
+    onPlayerMessage(player: Player, message: any): void {
+
     }
 }

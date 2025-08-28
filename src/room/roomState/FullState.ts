@@ -14,11 +14,11 @@ export class FullState implements RoomState {
 
     getName() { return "full"; }
 
-    addClient(player: Player): boolean {
+    addPlayer(player: Player): boolean {
         return false;
     }
 
-    removeClient(player: Player): void {
+    removePlayer(player: Player): void {
         this.room.players = this.room.players.filter(p => p !== player);
         this.room.setState(new ReadyState(this.room));
     }
@@ -34,5 +34,9 @@ export class FullState implements RoomState {
         if(isEveryPlayerReady) {
             this.room.startGame();
         }
+    }
+
+    onPlayerMessage(player: Player, message: any): void {
+
     }
 }

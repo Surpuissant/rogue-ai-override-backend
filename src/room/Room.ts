@@ -31,11 +31,11 @@ export class Room {
     }
 
     addPlayer(player: Player): boolean {
-        return this.state.addClient(player); // Adapter les states pour Player
+        return this.state.addPlayer(player); // Adapter les states pour Player
     }
 
     removePlayer(player: Player) {
-        this.state.removeClient(player); // Adapter les states pour Player
+        this.state.removePlayer(player); // Adapter les states pour Player
     }
 
     broadcast(data: any) {
@@ -66,6 +66,10 @@ export class Room {
 
     onPlayerReady(player: Player): void {
         this.state.onPlayerReady(player);
+    }
+
+    onPlayerMessage(player: Player, message: any): void {
+        this.state.onPlayerMessage(player, message);
     }
 
     startGame(): boolean {

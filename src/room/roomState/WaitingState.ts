@@ -13,7 +13,7 @@ export class WaitingState implements RoomState {
 
     getName() { return "waiting"; }
 
-    addClient(player: Player): boolean {
+    addPlayer(player: Player): boolean {
         if (this.room.players.length >= this.room.MAX_PLAYERS) return false;
         this.room.players.push(player);
 
@@ -24,7 +24,7 @@ export class WaitingState implements RoomState {
         return true;
     }
 
-    removeClient(player: Player): void {
+    removePlayer(player: Player): void {
         this.room.players = this.room.players.filter(p => p !== player);
     }
 
@@ -35,5 +35,9 @@ export class WaitingState implements RoomState {
     onPlayerReady(player: Player): void {
         // Il ne se passe rien si le joueur est ready dans le Waiting State
         return
+    }
+
+    onPlayerMessage(player: Player, message: any): void {
+
     }
 }
