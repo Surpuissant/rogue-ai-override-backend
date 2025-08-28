@@ -5,11 +5,21 @@ import { CommandBoard } from "../../command/board/CommandBoard";
 import { Logger } from "../../utils/Logger";
 import { EndState } from "./EndState";
 
+export interface TryAttempt {
+    timestamp: number;
+    success: boolean;
+    playerId: string;
+    playerName?: string;
+}
+
 export class PlayingState implements RoomState {
     private threat: number = 30;
     public commandPlayer: Map<Player, CommandBoard> = new Map();
+    private gameStartTime: number;
+    private tryHistory: TryAttempt[] = [];
 
     public constructor(private room: Room) {
+        this.gameStartTime = Date.now();
         this.createCommandBoard();
         this.room.players.forEach(player => {
             const board = this.commandPlayer.get(player)!;
@@ -58,7 +68,6 @@ export class PlayingState implements RoomState {
     }
 
     public updateRandomInstructionOnBoard(board: CommandBoard) {
-        // 1/3 Chance d'avoir une commande de son propre board
         let selectedBoard;
         if (Math.random() < 1/3) {
             selectedBoard = board;
@@ -68,7 +77,6 @@ export class PlayingState implements RoomState {
             selectedBoard = others[Math.floor(Math.random() * others.length)];
         }
 
-        // Récupérer les commandes disponibles du board sélectionné
         const availableCommands = selectedBoard.commands.filter(cmd => {
             const currentInstructionId = board.instruction?.command?.id;
             return cmd.getInstruction().command.id !== currentInstructionId;
@@ -94,6 +102,39 @@ export class PlayingState implements RoomState {
             });
             player.ws.send(message);
         });
+    }
+
+    private addTryToHistory(player: Player, success: boolean): void {
+        const currentTime = Date.now();
+        const timeFromStart = currentTime - this.gameStartTime;
+
+        this.tryHistory.push({
+            timestamp: timeFromStart,
+            success: success,
+            playerId: player.id,
+            playerName: player.name
+        });
+    }
+
+    public getSuccessfulTries(): number {
+        return this.tryHistory.filter(attempt => attempt.success).length;
+    }
+
+    public getBadTries(): number {
+        return this.tryHistory.filter(attempt => !attempt.success).length;
+    }
+
+    public getTryHistory(): TryAttempt[] {
+        return [...this.tryHistory];
+    }
+
+    public getFormattedTryHistory(): string {
+        return this.tryHistory.map((attempt, index) => {
+            const timeInSeconds = Math.round(attempt.timestamp / 1000);
+            const result = attempt.success ? "RÉUSSI" : "ÉCHOUÉ";
+            const playerInfo = attempt.playerName ? `${attempt.playerName} (${attempt.playerId})` : attempt.playerId;
+            return `${index + 1}. ${timeInSeconds}s - ${result} - ${playerInfo}`;
+        }).join('\n');
     }
 
     getName() { return "playing"; }
@@ -126,6 +167,9 @@ export class PlayingState implements RoomState {
                     this.updateRandomInstructionOnBoard(board);
                 }
             });
+
+            this.addTryToHistory(player, commandComplete);
+
             this.updateThreat(commandComplete ? Math.max(0, this.threat - 5) : Math.min(100, this.threat + 5))
         }
         this.broadcastInfoToPlayer();
@@ -138,7 +182,11 @@ export class PlayingState implements RoomState {
 
     endGame(win: boolean = false): void {
         this.stopAllInstructionRotations()
-        this.room.setState(new EndState(this.room, win))
+
+        Logger.info(`Fin de partie - Historique des tentatives:\n${this.getFormattedTryHistory()}`);
+        Logger.info(`Statistiques: ${this.getSuccessfulTries()} réussies, ${this.getBadTries()} échouées`);
+
+        this.room.setState(new EndState(this.room, win, this.tryHistory))
     }
 
     stopAllInstructionRotations(): void {
