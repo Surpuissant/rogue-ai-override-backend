@@ -1,12 +1,9 @@
 import {CommandBoard} from "./CommandBoard";
 
 export abstract class Command {
-    public id: string;
     public abstract status: string;
 
-    public constructor(public name: string) {
-        this.id = crypto.randomUUID();
-    }
+    public constructor(public name: string, public id: string) { }
 
     public abstract getType(): string;
     public abstract execute(action: string): void;

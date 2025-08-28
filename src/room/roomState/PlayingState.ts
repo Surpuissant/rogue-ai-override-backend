@@ -3,6 +3,8 @@ import { Room } from "../Room";
 import { Player } from "../../player/Player";
 import { CommandBoard } from "../../command/CommandBoard";
 import { Logger } from "../../utils/Logger";
+import {TimerState} from "./TimerState";
+import {EndState} from "./EndState";
 
 export class PlayingState implements RoomState {
     private threat: number = 30;
@@ -27,7 +29,8 @@ export class PlayingState implements RoomState {
 
     public createCommandBoard() {
         this.room.players.forEach(player => {
-            const commandBoard = CommandBoard.createCommandBoard();
+            const commandBoard =
+                CommandBoard.createCommandBoard(Array.from(this.commandPlayer.values()));
             this.commandPlayer.set(player, commandBoard);
         });
     }
@@ -37,7 +40,7 @@ export class PlayingState implements RoomState {
         board.instructionInterval = setInterval(() => {
             this.updateRandomInstructionOnBoard(board);
             this.broadcastInfoToPlayer()
-            this.threat = Math.min(100, this.threat + 5);
+            this.updateThreat(Math.min(100, this.threat + 5))
         }, 3000);
     }
 
@@ -126,9 +129,19 @@ export class PlayingState implements RoomState {
                     this.updateRandomInstructionOnBoard(board);
                 }
             });
-            this.threat = commandComplete ? Math.max(0, this.threat - 5) : Math.min(100, this.threat + 5);
+            this.updateThreat(commandComplete ? Math.max(0, this.threat - 5) : Math.min(100, this.threat + 5))
         }
         this.broadcastInfoToPlayer();
+    }
+
+    updateThreat(newThreat: number): void {
+        this.threat = newThreat;
+        if(this.threat === 100) this.endGame(false)
+    }
+
+    endGame(win: boolean = false): void {
+        this.stopAllInstructionRotations()
+        this.room.setState(new EndState(this.room, win))
     }
 
     stopAllInstructionRotations(): void {

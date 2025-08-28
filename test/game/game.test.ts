@@ -40,15 +40,12 @@ const connectPlayer = (roomCode: string, port: number, messageCb: any) =>
     });
 
 beforeAll(async () => {
-    // Start server
     server = Server.getInstance(TEST_PORT);
     server.start();
 
-    // Create room
     roomCode = server.roomManager.createRoom();
     room = server.roomManager.getRoom(roomCode);
 
-    // Connect players
     player1ws = await connectPlayer(roomCode, TEST_PORT, (data: any) => {
         if (data.type === "player_board") {
             globalThreat = data.payload.threat;
@@ -65,11 +62,10 @@ beforeAll(async () => {
         }
     });
 
-    // Set players ready
     player1ws.send(JSON.stringify({ type: "room", payload: { ready: true } }));
     player2ws.send(JSON.stringify({ type: "room", payload: { ready: true } }));
 
-    // Wait for game state to transition: waiting -> timer -> playing
+    // Attente de la transition de game state : waiting -> timer -> playing
     await wait(3500);
 });
 
@@ -136,6 +132,26 @@ describe("Game flow tests", () => {
         expect(instructionP1.instruction_text).not.toBe(firstInstruction);
         // Le global threat a du un peu augmenté
         expect(globalThreat).toBe(25);
+    });
+
+
+
+    test("Verify game is loosable", async () => {
+
+        for (let i = 0; i < 15; i++) {
+            player2ws.send(JSON.stringify({
+                type: "execute_action",
+                payload: {
+                    command_id: instructionP2.command_id,
+                    action: "toggle"
+                }
+            }));
+            await wait(50);
+        }
+
+        console.warn(room?.getStateName())
+        console.warn(globalThreat)
+        expect(room?.getStateName()).toBe("end");
     });
 
 });

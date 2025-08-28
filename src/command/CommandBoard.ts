@@ -29,15 +29,21 @@ export class CommandBoard {
         }
     }
 
-    static createCommandBoard(){
-        let commandBoard = new CommandBoard();
+    static createCommandBoard(otherBoards: CommandBoard[]) {
+        const commandBoard = new CommandBoard();
+        const existingIds = new Set<string>();
 
-        // Actuellement, il n'y a que 4 commandes par board, déja bien !
-        commandBoard.addCommand(CommandFactory.getRandomCommand())
-        commandBoard.addCommand(CommandFactory.getRandomCommand())
-        commandBoard.addCommand(CommandFactory.getRandomCommand())
-        commandBoard.addCommand(CommandFactory.getRandomCommand())
+        otherBoards.forEach(board => {
+            board.commands.forEach(cmd => existingIds.add(cmd.id));
+        });
+
+        for (let i = 0; i < 4; i++) {
+            const command = CommandFactory.getRandomCommand(Array.from(existingIds));
+            commandBoard.addCommand(command);
+            existingIds.add(command.id);
+        }
 
         return commandBoard;
     }
+
 }

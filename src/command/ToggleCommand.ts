@@ -5,8 +5,8 @@ export class ToggleCommand extends Command {
     public status: string = "inactive";
     private isActive = () => this.status === "active";
 
-    public constructor (name: string) {
-        super(name);
+    public constructor (name: string, id: string) {
+        super(name, id);
     }
 
     public execute(action: string): void {
