@@ -4,10 +4,11 @@ import { Server } from "../../src/server/Server";
 import { setTimeout as wait } from 'node:timers/promises';
 // @ts-ignore
 import WebSocket from "ws";
-import {ToggleCommand} from "../../src/command/ToggleCommand";
+import { PlayingState } from "../../src/room/roomState/PlayingState";
+import {SliderCommand} from "../../src/command/SliderCommand";
 
 let server: Server;
-const TEST_PORT = 3015;
+const TEST_PORT = 3022;
 let roomCode: string;
 let room: ReturnType<typeof Server.prototype.roomManager.getRoom>;
 
@@ -19,8 +20,6 @@ let instructionP1: any = null;
 let boardCommandP1: any[] = [];
 let instructionP2: any = null;
 let boardCommandP2: any[] = [];
-
-let firstInstruction: any = null;
 
 // Utility function pour connecter un joueur
 const connectPlayer = (roomCode: string, port: number, messageCb: any) =>
@@ -45,7 +44,7 @@ beforeAll(async () => {
     server = Server.getInstance(TEST_PORT);
     server.start();
 
-    roomCode = server.roomManager.createRoom(ToggleCommand);
+    roomCode = server.roomManager.createRoom(SliderCommand);
     room = server.roomManager.getRoom(roomCode);
 
     player1ws = await connectPlayer(roomCode, TEST_PORT, (data: any) => {
@@ -77,23 +76,48 @@ afterAll(() => {
     server.server.close();
 });
 
-describe("Game flow tests", () => {
-
-    test("Room should exist and start in waiting state", async () => {
+describe("Room Rule Tests", () => {
+    test("Room should only have Slider Command", () => {
         expect(room).toBeDefined();
         expect(room!.getStateName()).toBe("playing");
-        expect(boardCommandP1.length).toBeGreaterThanOrEqual(1);
-        expect(boardCommandP2.length).toBeGreaterThanOrEqual(1);
-        expect(instructionP1).not.toBeNull();
-        expect(instructionP2).not.toBeNull();
-        expect(globalThreat).toBe(30);
+        (room!.state as PlayingState).commandPlayer.forEach(board => {
+            board.commands.forEach((command) => {
+                expect(command).toBeInstanceOf(SliderCommand);
+            })
+        });
     });
 
-    test("Player toggles action", async () => {
+    test("Player do GOOD action on slider (good job player)", async () => {
         await wait(200);
         let selectedPlayer = player1ws;
         let selectedInstruction = instructionP1;
-        firstInstruction = selectedInstruction.instruction_text
+        let firstInstruction = selectedInstruction.instruction_text
+
+        let command = boardCommandP1.find((command) => command.id === selectedInstruction.command_id)
+
+        if(command === undefined){
+            selectedPlayer = player2ws
+        }
+
+        // Dans ce jeu, les actions du joueur 1 dépendant des instruction du joueur 2
+        selectedPlayer.send(JSON.stringify({
+            type: "execute_action",
+            payload: {
+                // Ici je triche pour être vraiment sûr que le test passe et que les sliders fonctionnent
+                command_id: selectedInstruction.command_id,
+                action: selectedInstruction.expected_status
+            }
+        }));
+        await wait(200);
+        expect(globalThreat).toBe(25);
+        expect(selectedInstruction).not.toBe(firstInstruction);
+    });
+
+    test("Player do bad action on slider", async () => {
+        await wait(200);
+        let selectedPlayer = player1ws;
+        let selectedInstruction = instructionP1;
+        let firstInstruction = selectedInstruction.instruction_text
 
         let command = boardCommandP1.find((command) => command.id === selectedInstruction.command_id)
 
@@ -105,28 +129,13 @@ describe("Game flow tests", () => {
         selectedPlayer.send(JSON.stringify({
             type: "execute_action",
             payload: {
-                // Ici je triche pour être vraiment sûr que le test passe
+                // Ici, je triche pour être vraiment sûr que le test passe et que les sliders fonctionnent
                 command_id: selectedInstruction.command_id,
-                action: "toggle"
+                action: Number(selectedInstruction.expected_status) + 1
             }
         }));
         await wait(200);
-        expect(globalThreat).toBe(25);
-        // Et maintenant du coup, l'instruction P2 a du s'update
-        expect(selectedInstruction).not.toBe(firstInstruction);
-    });
-
-    test("Global board states remain consistent", () => {
-        expect(boardCommandP1.length).toBe(4);
-        expect(boardCommandP2.length).toBe(4);
-        expect(room!.players.filter(p => p.ready).length).toBe(2);
-    });
-
-    test("Timeout on instruction works", async () => {
-        firstInstruction = instructionP1.instruction_text
-        await wait(3100);
-        expect(instructionP1.instruction_text).not.toBe(firstInstruction);
-        // Le global threat a du un peu augmenté
         expect(globalThreat).toBe(30);
+        expect(selectedInstruction).not.toBe(firstInstruction);
     });
 });
