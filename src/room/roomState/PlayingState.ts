@@ -25,6 +25,14 @@ export class PlayingState implements RoomState {
             }
         });
         this.broadcastInfoToPlayer();
+
+        setTimeout(() => {
+            if (this.threat < 100) {
+                this.endGame(true);
+            } else {
+                this.endGame(false);
+            }
+        }, 90 * 1000);
     }
 
     public createCommandBoard() {

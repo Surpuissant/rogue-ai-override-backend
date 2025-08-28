@@ -5,7 +5,7 @@ import { setTimeout as wait } from 'node:timers/promises';
 import WebSocket from "ws";
 
 let server: Server;
-const TEST_PORT = 3011;
+const TEST_PORT = 3012;
 let roomCode: string;
 let room: ReturnType<typeof Server.prototype.roomManager.getRoom>;
 
@@ -19,6 +19,7 @@ let instructionP2: any = null;
 let boardCommandP2: any[] = [];
 
 let firstInstruction: any = null;
+let win: any = null;
 
 // Utility function pour connecter un joueur
 const connectPlayer = (roomCode: string, port: number, messageCb: any) =>
@@ -52,6 +53,9 @@ beforeAll(async () => {
             instructionP1 = data.payload.instruction;
             boardCommandP1 = data.payload.board.commands;
         }
+        if(data.type === "game_state") {
+            if(data.payload.state === "end_state") win = data.payload.win
+        }
     });
 
     player2ws = await connectPlayer(roomCode, TEST_PORT, (data: any) => {
@@ -59,6 +63,9 @@ beforeAll(async () => {
             globalThreat = data.payload.threat;
             instructionP2 = data.payload.instruction;
             boardCommandP2 = data.payload.board.commands;
+        }
+        if(data.type === "game_state") {
+            if(data.payload.state === "end_state") win = data.payload.win
         }
     });
 
@@ -145,17 +152,19 @@ describe("Game flow tests", () => {
             }));
             await wait(50);
         }
-
-        console.warn(room?.getStateName())
-        console.warn(globalThreat)
         expect(room?.getStateName()).toBe("end");
+        expect(win).toBe(false);
+    });
 
-        console.warn(server.roomManager)
-
+    test("Everyone leave the game", async () => {
+        // Bon en gros si tout le monde quitte la room, elle existe plus normalement
         expect(server.roomManager.rooms.size).toBe(1);
+
         player1ws.close();
         player2ws.close();
+
         await wait(200);
+
         expect(server.roomManager.rooms.size).toBe(0);
-    });
+    })
 });
