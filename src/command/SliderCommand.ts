@@ -46,11 +46,12 @@ export class SliderCommand extends Command {
         }
 
         return {
-            id: this.id,
-            name: this.name,
-            type: this.getType(),
-            actual_status: this.status,
-            action_possible: actions
+            "id": this.id,
+            "name": this.name,
+            "type": this.getType(),
+            "styleType": this.getStyleType(),
+            "actual_status": this.status,
+            "action_possible": actions
         };
     }
 }

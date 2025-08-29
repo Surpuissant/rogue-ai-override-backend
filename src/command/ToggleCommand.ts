@@ -39,6 +39,7 @@ export class ToggleCommand extends Command {
             "id": this.id,
             "name": this.name,
             "type": this.getType(),
+            "styleType": this.getStyleType(),
             "actual_status": this.status,
             "action_possible": ["toggle"]
         };

@@ -197,6 +197,7 @@ En prime, vous recevez des informations sur le "tableau" que vous avez (ce que n
                     id: 'cross_validation',
                     name: 'Validation croisée',
                     type: 'toggle',
+                    styleType: 'toggle',
                     actual_status: 'inactive',
                     action_possible: [ 'toggle' ]
                 },
@@ -204,6 +205,7 @@ En prime, vous recevez des informations sur le "tableau" que vous avez (ce que n
                     id: 'sentiment_analysis',
                     name: 'Analyse de sentiment',
                     type: 'toggle',
+                    styleType: 'lever_button',
                     actual_status: 'inactive',
                     action_possible: [ 'toggle' ]
                 },
@@ -211,6 +213,7 @@ En prime, vous recevez des informations sur le "tableau" que vous avez (ce que n
                     id: 'compression_rate',
                     name: 'Taux de compression',
                     type: 'slider',
+                    styleType: 'slider',
                     actual_status: '0',
                     action_possible: [ '1', '2', '3', '4', '5' ]
                 },
@@ -218,6 +221,7 @@ En prime, vous recevez des informations sur le "tableau" que vous avez (ce que n
                     id: 'volume_hallucinations',
                     name: 'Volume hallucinations',
                     type: 'slider',
+                    styleType: 'slider',
                     actual_status: '0',
                     action_possible: [
                         '1',  '2', '3',
