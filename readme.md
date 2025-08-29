@@ -31,7 +31,8 @@ Le serveur est déjà déployé et accessible à l'adresse :
 
 3. **Lancer le serveur en développement**
    ```bash
-   npm run start
+   npm run dev 
+   # Ou le lancer sans hot reload : npm run start
    ```
 
 ---
