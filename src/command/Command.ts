@@ -6,6 +6,7 @@ export abstract class Command {
     protected constructor(public name: string, public id: string) { }
 
     public abstract getType(): string;
+    public abstract getStyleType(): string;
     public abstract execute(action: string): void;
     public abstract getInstruction(): Instruction;
     public abstract toObject(): object;

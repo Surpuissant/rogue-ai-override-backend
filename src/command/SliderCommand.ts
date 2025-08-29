@@ -1,13 +1,14 @@
 import { Command } from "./Command";
 import { Logger } from "../utils/Logger";
 import { Instruction } from "./board/Instruction";
+import {CommandStyleType} from "./CommandStyleType";
 
 // ! Attention, ce slider va de 1 en 1, pas de float !!!!!
 // C'est donc un IntegerSlider !
 export class SliderCommand extends Command {
     public status: string = "0";
 
-    public constructor (name: string, id: string, public max: number) {
+    public constructor (name: string, id: string, public max: number, private readonly style_type: CommandStyleType) {
         super(name, id);
     }
 
@@ -34,6 +35,7 @@ export class SliderCommand extends Command {
     }
 
     public getType(): string { return "slider" }
+    public getStyleType(): string { return this.style_type; }
 
     public toObject(): object {
         const actions: string[] = [];

@@ -1,12 +1,13 @@
 import { Command } from "./Command";
 import { Logger } from "../utils/Logger";
 import { Instruction } from "./board/Instruction";
+import {CommandStyleType} from "./CommandStyleType";
 
 export class ToggleCommand extends Command {
     public status: string = "inactive";
     private isActive = () => this.status === "active";
 
-    public constructor (name: string, id: string) {
+    public constructor (name: string, id: string, private readonly style_type: CommandStyleType) {
         super(name, id);
     }
 
@@ -31,6 +32,7 @@ export class ToggleCommand extends Command {
     }
 
     public getType(): string { return "toggle" }
+    public getStyleType(): string { return this.style_type; }
 
     public toObject(): object {
         return {
