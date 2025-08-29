@@ -15,7 +15,7 @@ export interface TryAttempt {
 
 // noinspection JSUnusedGlobalSymbols
 export class PlayingState implements RoomState {
-    private threat: number = 30;
+    private threat: number = CONFIG.STARTING_THREAT;
     public commandPlayer: Map<Player, CommandBoard> = new Map();
     private readonly gameStartTime: number;
     private tryHistory: TryAttempt[] = [];
@@ -25,7 +25,10 @@ export class PlayingState implements RoomState {
             type: "game_state",
             payload: {
                 state: "game_start",
-                start_threat: this.threat
+                start_threat: this.threat,
+                game_duration: CONFIG.GAME_DURATION,
+                // TODO : Increase level on every retry
+                level: 1
             }
         });
         room.players.forEach(player => { player.setReady(false) })
@@ -44,7 +47,7 @@ export class PlayingState implements RoomState {
             } else {
                 this.endGame(false);
             }
-        }, 90 * 1000);
+        }, CONFIG.GAME_DURATION);
     }
 
     public createCommandBoard() {

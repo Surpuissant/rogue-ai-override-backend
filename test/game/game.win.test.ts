@@ -5,6 +5,7 @@ import { setTimeout as wait } from 'node:timers/promises';
 // @ts-ignore
 import WebSocket from "ws";
 import {ToggleCommand} from "../../src/command/ToggleCommand";
+import CONFIG from "../../src/Config";
 
 let server: Server;
 const TEST_PORT = 3013;
@@ -95,7 +96,7 @@ describe("Game flow tests", () => {
         expect(boardCommandP2.length).toBeGreaterThanOrEqual(1);
         expect(instructionP1).not.toBeNull();
         expect(instructionP2).not.toBeNull();
-        expect(globalThreat).toBe(30);
+        expect(globalThreat).toBe(CONFIG.STARTING_THREAT);
     });
 
     test("Verify game is winnable", async () => {

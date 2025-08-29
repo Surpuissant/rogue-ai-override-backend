@@ -5,6 +5,7 @@ import { setTimeout as wait } from 'node:timers/promises';
 // @ts-ignore
 import WebSocket from "ws";
 import {ToggleCommand} from "../../src/command/ToggleCommand";
+import CONFIG from "../../src/Config";
 
 let server: Server;
 const TEST_PORT = 3015;
@@ -86,7 +87,7 @@ describe("Game flow tests", () => {
         expect(boardCommandP2.length).toBeGreaterThanOrEqual(1);
         expect(instructionP1).not.toBeNull();
         expect(instructionP2).not.toBeNull();
-        expect(globalThreat).toBe(30);
+        expect(globalThreat).toBe(CONFIG.STARTING_THREAT);
     });
 
     test("Player toggles action", async () => {
@@ -111,7 +112,7 @@ describe("Game flow tests", () => {
             }
         }));
         await wait(200);
-        expect(globalThreat).toBe(25);
+        expect(globalThreat).toBe(CONFIG.STARTING_THREAT-5);
         // Et maintenant du coup, l'instruction P2 a du s'update
         expect(selectedInstruction).not.toBe(firstInstruction);
     });
@@ -125,9 +126,10 @@ describe("Game flow tests", () => {
 
     test("Timeout on instruction works", async () => {
         firstInstruction = instructionP1.instruction_text
-        await wait(3100);
+        // On attend le timeout + 1 secondes pour être sûr que le message a eu le temps d'être reçu
+        await wait(CONFIG.INSTRUCTION_TIMEOUT + 1000);
         expect(instructionP1.instruction_text).not.toBe(firstInstruction);
         // Le global threat a du un peu augmenté
-        expect(globalThreat).toBe(30);
-    });
+        expect(globalThreat).toBe(CONFIG.STARTING_THREAT);
+    }, CONFIG.INSTRUCTION_TIMEOUT + 3000);
 });

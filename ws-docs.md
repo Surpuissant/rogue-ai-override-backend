@@ -178,7 +178,9 @@ Maintenant que la minuterie est terminée, vous pouvez commencer la partie.
     type: "game_state", 
     payload: {
         state: "game_start", 
-        start_threat: 30
+        start_threat: 50,
+        game_duration: 45000,
+        level: 1
     }
 } 
 ```

@@ -6,6 +6,7 @@ import { setTimeout as wait } from 'node:timers/promises';
 import WebSocket from "ws";
 import { PlayingState } from "../../src/room/roomState/PlayingState";
 import { SliderCommand } from "../../src/command/SliderCommand";
+import CONFIG from "../../src/Config";
 
 let server: Server;
 const TEST_PORT = 3022;
@@ -109,7 +110,7 @@ describe("Room Rule Tests", () => {
             }
         }));
         await wait(200);
-        expect(globalThreat).toBe(25);
+        expect(globalThreat).toBe(CONFIG.STARTING_THREAT - 5);
         expect(selectedInstruction).not.toBe(firstInstruction);
     });
 
@@ -135,7 +136,7 @@ describe("Room Rule Tests", () => {
             }
         }));
         await wait(200);
-        expect(globalThreat).toBe(30);
+        expect(globalThreat).toBe(CONFIG.STARTING_THREAT);
         expect(selectedInstruction).not.toBe(firstInstruction);
     });
 });
