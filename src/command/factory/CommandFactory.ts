@@ -5,7 +5,6 @@ import { Logger } from "../../utils/Logger";
 
 export class CommandFactory {
     public static getRandomCommand(exceptIds: string[] = [], onlyCommandType: CommandConstructor | null): Command {
-        Logger.info(onlyCommandType!.toString());
         const commands = [
             new ToggleCommand("Filtre d'hallucination", "hallucination_filter"),
             new ToggleCommand("Mode créativité", "creative_mode"),

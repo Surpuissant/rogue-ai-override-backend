@@ -4,6 +4,7 @@ import { Player } from "../../player/Player";
 import { CommandBoard } from "../../command/board/CommandBoard";
 import { Logger } from "../../utils/Logger";
 import { EndState } from "./EndState";
+import CONFIG from "../../Config";
 
 export interface TryAttempt {
     timestamp: number;
@@ -20,6 +21,13 @@ export class PlayingState implements RoomState {
     private tryHistory: TryAttempt[] = [];
 
     public constructor(private room: Room) {
+        room.broadcast({
+            type: "game_state",
+            payload: {
+                state: "game_start",
+                start_threat: this.threat
+            }
+        });
         room.players.forEach(player => { player.setReady(false) })
         this.gameStartTime = Date.now();
         this.createCommandBoard();
@@ -27,13 +35,6 @@ export class PlayingState implements RoomState {
             const board = this.commandPlayer.get(player)!;
             this.updateRandomInstructionOnBoard(board);
             this.startInstructionRotation(board);
-        });
-        room.broadcast({
-            type: "game_state",
-            payload: {
-                state: "game_start",
-                start_threat: this.threat
-            }
         });
         this.broadcastInfoToPlayer();
 
@@ -60,7 +61,7 @@ export class PlayingState implements RoomState {
             this.updateRandomInstructionOnBoard(board);
             this.broadcastInfoToPlayer()
             this.updateThreat(Math.min(100, this.threat + 5))
-        }, 3000);
+        }, CONFIG.INSTRUCTION_TIMEOUT);
     }
 
     public setRandomInstruction(): void {
