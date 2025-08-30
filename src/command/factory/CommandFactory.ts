@@ -1,7 +1,6 @@
 import { Command } from "../Command";
 import { ToggleCommand } from "../ToggleCommand";
 import { SliderCommand } from "../SliderCommand";
-import { Logger } from "../../utils/Logger";
 import { CommandStyleType } from "../CommandStyleType";
 import { ConstructorType } from "../../utils/ConstructorType";
 

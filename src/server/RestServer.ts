@@ -93,7 +93,7 @@ export class RestServer {
                 });
             }
 
-            let code = "";
+            let code: string;
             switch (gameType) {
                 case 'toggle':
                     code = this.roomManager.createRoom(ToggleCommand);

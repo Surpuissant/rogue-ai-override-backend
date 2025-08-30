@@ -1,7 +1,7 @@
 import { Command } from "../Command";
 import { CommandFactory } from "../factory/CommandFactory";
 import { Instruction } from "./Instruction";
-import {ConstructorType} from "../../utils/ConstructorType";
+import { ConstructorType } from "../../utils/ConstructorType";
 
 export class CommandBoard {
     public commands: Command[] = [];

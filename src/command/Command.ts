@@ -1,5 +1,5 @@
 import { Instruction } from "./board/Instruction";
-import {CommandStyleType} from "./CommandStyleType";
+import { CommandStyleType } from "./CommandStyleType";
 
 export abstract class Command {
     public abstract status: string;

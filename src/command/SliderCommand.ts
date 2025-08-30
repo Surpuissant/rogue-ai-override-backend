@@ -1,7 +1,7 @@
 import { Command } from "./Command";
 import { Logger } from "../utils/Logger";
 import { Instruction } from "./board/Instruction";
-import {CommandStyleType} from "./CommandStyleType";
+import { CommandStyleType } from "./CommandStyleType";
 
 // ! Attention, ce slider va de 1 en 1, pas de float !!!!!
 // C'est donc un IntegerSlider !

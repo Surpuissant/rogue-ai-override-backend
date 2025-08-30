@@ -46,7 +46,7 @@ export class TimerState implements RoomState {
     }
 
     onPlayerReady(player: Player): void {
-        // Nothing can happens here normally
+        // Il ne se passe rien ici
     }
 
     onPlayerMessage(player: Player, message: any): void {

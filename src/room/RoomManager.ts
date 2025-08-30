@@ -1,7 +1,8 @@
-import { Room, RoomRule } from './Room';
+import { Room } from './Room';
 import { Player } from '../player/Player';
 import { ConstructorType } from "../utils/ConstructorType";
 import CONFIG from "../Config";
+import { RoomRule } from "./RoomRule";
 
 export class RoomManager {
     private static instance: RoomManager;

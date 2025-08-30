@@ -1,16 +1,8 @@
 import { Player } from '../player/Player';
 import { RoomState } from "./roomState/RoomState";
 import { WaitingState } from "./roomState/WaitingState";
-import { ConstructorType } from "../utils/ConstructorType";
-import Table from "cli-table3";
-import {Logger, TableInformation} from "../utils/Logger";
-
-export class RoomRule {
-    public constructor(
-        public readonly duration: number,
-        public readonly onlyCommandType: ConstructorType | null
-    ) { }
-}
+import { Logger, TableInformation } from "../utils/Logger";
+import { RoomRule } from "./RoomRule";
 
 export class Room {
     private readonly code: string;

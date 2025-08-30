@@ -26,7 +26,7 @@ export class PlayingState implements RoomState {
             payload: {
                 state: "game_start",
                 start_threat: this.threat,
-                game_duration: CONFIG.DEFAULT_GAME_DURATION,
+                game_duration: this.room.roomRule.duration,
                 // TODO : Increase level on every retry
                 level: 1
             }
@@ -47,7 +47,7 @@ export class PlayingState implements RoomState {
             } else {
                 this.endGame(false);
             }
-        }, CONFIG.DEFAULT_GAME_DURATION);
+        }, this.room.roomRule.duration);
     }
 
     public createCommandBoard() {
