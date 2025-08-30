@@ -8,8 +8,8 @@ import {CommandStyleType} from "./CommandStyleType";
 export class SliderCommand extends Command {
     public status: string = "0";
 
-    public constructor (name: string, id: string, public max: number, private readonly style_type: CommandStyleType) {
-        super(name, id);
+    public constructor (name: string, id: string, public max: number, style_type: CommandStyleType) {
+        super(name, id, style_type);
     }
 
     public execute(action: string): void {
@@ -35,7 +35,6 @@ export class SliderCommand extends Command {
     }
 
     public getType(): string { return "slider" }
-    public getStyleType(): string { return this.style_type; }
 
     public toObject(): object {
         const actions: string[] = [];

@@ -1,11 +1,12 @@
-import { Command, CommandConstructor } from "../Command";
+import { Command } from "../Command";
 import { ToggleCommand } from "../ToggleCommand";
 import { SliderCommand } from "../SliderCommand";
 import { Logger } from "../../utils/Logger";
 import { CommandStyleType } from "../CommandStyleType";
+import { ConstructorType } from "../../utils/ConstructorType";
 
 export class CommandFactory {
-    public static getRandomCommand(exceptIds: string[] = [], onlyCommandType: CommandConstructor | null): Command {
+    public static getRandomCommand(exceptIds: string[] = [], onlyCommandType: ConstructorType | null): Command {
         const commands = [
             new ToggleCommand("Validation des sources", "source_validation", CommandStyleType.ON_OFF_BUTTON),
             new ToggleCommand("Mode debug", "debug_mode", CommandStyleType.ON_OFF_BUTTON),

@@ -1,10 +1,10 @@
 import { Player } from '../player/Player';
 import { RoomState } from "./roomState/RoomState";
 import { WaitingState } from "./roomState/WaitingState";
-import {CommandConstructor} from "../command/Command";
+import { ConstructorType } from "../utils/ConstructorType";
 
 export class RoomRule {
-    public constructor(public onlyCommandType: CommandConstructor | null) { }
+    public constructor(public onlyCommandType: ConstructorType | null) { }
 }
 
 export class Room {

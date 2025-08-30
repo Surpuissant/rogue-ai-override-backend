@@ -8,7 +8,7 @@ export class ToggleCommand extends Command {
     private isActive = () => this.status === "active";
 
     public constructor (name: string, id: string, private readonly style_type: CommandStyleType) {
-        super(name, id);
+        super(name, id, style_type);
     }
 
     public execute(action: string): void {
@@ -32,7 +32,6 @@ export class ToggleCommand extends Command {
     }
 
     public getType(): string { return "toggle" }
-    public getStyleType(): string { return this.style_type; }
 
     public toObject(): object {
         return {

@@ -1,6 +1,7 @@
-import { Command, CommandConstructor } from "../Command";
+import { Command } from "../Command";
 import { CommandFactory } from "../factory/CommandFactory";
 import { Instruction } from "./Instruction";
+import {ConstructorType} from "../../utils/ConstructorType";
 
 export class CommandBoard {
     public commands: Command[] = [];
@@ -30,7 +31,7 @@ export class CommandBoard {
         }
     }
 
-    static createCommandBoard(otherBoards: CommandBoard[], onlyCommandType: CommandConstructor | null) {
+    static createCommandBoard(otherBoards: CommandBoard[], onlyCommandType: ConstructorType | null) {
         const commandBoard = new CommandBoard();
         const existingIds = new Set<string>();
 
