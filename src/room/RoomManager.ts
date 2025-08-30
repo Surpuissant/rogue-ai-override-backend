@@ -1,6 +1,7 @@
 import { Room, RoomRule } from './Room';
 import { Player } from '../player/Player';
 import { ConstructorType } from "../utils/ConstructorType";
+import CONFIG from "../Config";
 
 export class RoomManager {
     private static instance: RoomManager;
@@ -15,13 +16,21 @@ export class RoomManager {
         return RoomManager.instance;
     }
 
-    createRoom(onlyCommandType: ConstructorType | null = null): string {
+    createRoom(
+        onlyCommandType: ConstructorType | null = null,
+        gameDuration: number | null = null,
+    ): string {
         let code: string;
         do {
             code = Math.random().toString(36).slice(2, 8).toUpperCase();
         } while (this.rooms.has(code));
 
-        this.rooms.set(code, new Room(code, new RoomRule(onlyCommandType)));
+        this.rooms.set(code, new Room(code,
+            new RoomRule(
+                gameDuration === null ? CONFIG.DEFAULT_GAME_DURATION : gameDuration,
+                onlyCommandType,
+            )
+        ));
         return code;
     }
 

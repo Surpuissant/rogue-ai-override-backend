@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
+import Table from "cli-table3";
 
 export class Logger {
     private static logDir: string = "logs";
@@ -22,14 +23,36 @@ export class Logger {
     }
 
     static info(message: string) {
+        console.log(message)
         Logger.writeLog("INFO", message);
     }
 
     static warn(message: string) {
+        console.warn(message)
         Logger.writeLog("WARN", message);
     }
 
     static error(message: string) {
+        console.error(message)
         Logger.writeLog("ERROR", message);
     }
+
+    static infoTable(headers: string[], contents: string[][]) {
+        const table = new Table({
+            head: headers,
+            wordWrap: true
+        });
+
+        contents.forEach(content => {
+            table.push(content);
+        })
+
+        console.log(table.toString());
+        Logger.writeLog("INFO", table.toString());
+    }
+}
+
+export interface TableInformation {
+    headers: string[];
+    contents: string[];
 }

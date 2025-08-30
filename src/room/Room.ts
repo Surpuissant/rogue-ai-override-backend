@@ -2,9 +2,14 @@ import { Player } from '../player/Player';
 import { RoomState } from "./roomState/RoomState";
 import { WaitingState } from "./roomState/WaitingState";
 import { ConstructorType } from "../utils/ConstructorType";
+import Table from "cli-table3";
+import {Logger, TableInformation} from "../utils/Logger";
 
 export class RoomRule {
-    public constructor(public onlyCommandType: ConstructorType | null) { }
+    public constructor(
+        public readonly duration: number,
+        public readonly onlyCommandType: ConstructorType | null
+    ) { }
 }
 
 export class Room {
@@ -12,10 +17,37 @@ export class Room {
     public players: Player[] = [];
     public state: RoomState;
 
-    // RoomRule permet de si on le souhaite, avoir une room avec qu'un certain type de command type
-    constructor(code: string, public roomRule: RoomRule = new RoomRule(null)) {
+    constructor(code: string, public roomRule: RoomRule) {
         this.code = code;
         this.state = new WaitingState(this);
+        this.logRoomInfo()
+    }
+
+    logRoomInfo(additionnalInfo: TableInformation | null = null): void {
+        let headers = [
+            "Code",
+            "Durée (s)",
+            "Type de commande autorisé",
+            "Nb joueurs actuels",
+            "Etat actuel"
+        ];
+
+        const contents = [
+            this.code,
+            this.roomRule.duration.toString(),
+            this.roomRule.onlyCommandType
+                ? this.roomRule.onlyCommandType.name
+                : "aucune restriction",
+            this.players.length.toString(),
+            this.state.getName()
+        ];
+
+        if(additionnalInfo !== null) {
+            headers.concat(additionnalInfo.headers)
+            headers.concat(additionnalInfo.contents)
+        }
+
+        Logger.infoTable(headers, [contents])
     }
 
     getCode(): string {
@@ -31,6 +63,10 @@ export class Room {
     }
 
     setState(state: RoomState) {
+        this.logRoomInfo({
+            headers : ["Changement d'état (from)", "Changement d'état (to)"],
+            contents: [this.state.getName(), state.getName()]
+        })
         this.state = state;
     }
 
