@@ -21,7 +21,8 @@ Le WebSocket envoie plusieurs types de messages pour informer les clients de l'Ã
       payload: {
           you: { id: '...', name: '...', ready: false },
           players: [ { id: '...', name: '...', ready: false } ],
-          room_state: 'ready'
+          room_state: 'ready',
+          level: 1
       }
   }
   ```
@@ -179,8 +180,7 @@ Maintenant que la minuterie est terminÃ©e, vous pouvez commencer la partie.
     payload: {
         state: "game_start", 
         start_threat: 50,
-        game_duration: 45000,
-        level: 1
+        game_duration: 45000
     }
 } 
 ```

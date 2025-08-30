@@ -27,8 +27,6 @@ export class PlayingState implements RoomState {
                 state: "game_start",
                 start_threat: this.threat,
                 game_duration: this.room.roomRule.duration,
-                // TODO : Increase level on every retry
-                level: 1
             }
         });
         room.players.forEach(player => { player.setReady(false) })
@@ -188,6 +186,9 @@ export class PlayingState implements RoomState {
 
     endGame(win: boolean = false): void {
         this.stopAllInstructionRotations()
+
+        // Augmente le niveau si la partie est gagnée
+        if(win) { this.room.setLevel(this.room.level + 1); }
 
         Logger.info(`Fin de partie - Historique des tentatives:\n${this.getFormattedTryHistory()}`);
         Logger.info(`Statistiques: ${this.getSuccessfulTries()} réussies, ${this.getBadTries()} échouées`);

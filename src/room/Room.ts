@@ -8,11 +8,19 @@ export class Room {
     private readonly code: string;
     public players: Player[] = [];
     public state: RoomState;
+    public level: number;
 
     constructor(code: string, public roomRule: RoomRule) {
         this.code = code;
         this.state = new WaitingState(this);
+        this.level = 0;
+        this.setLevel(1)
         this.logRoomInfo()
+    }
+
+    public setLevel(level: number) {
+        this.level = level;
+        this.broadcastInfoOfAllPlayers()
     }
 
     logRoomInfo(additionnalInfo: TableInformation | null = null): void {
@@ -87,7 +95,8 @@ export class Room {
                 "payload": {
                     "you": player.toObject(),
                     "players": this.players.map(p => p.toObject()),
-                    "room_state": this.getStateName()
+                    "room_state": this.getStateName(),
+                    "level": this.level,
                 }
             }
             const message = JSON.stringify(raw_ws_message);
