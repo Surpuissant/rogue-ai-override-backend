@@ -2,14 +2,21 @@ import { Command } from "./Command";
 import { Logger } from "../utils/Logger";
 import { Instruction } from "./board/Instruction";
 import { CommandStyleType } from "./CommandStyleType";
+import { CommandBoard } from "./board/CommandBoard";
 
 // ! Attention, ce slider va de 1 en 1, pas de float !!!!!
 // C'est donc un IntegerSlider !
 export class SliderCommand extends Command {
     public status: string = "0";
 
-    public constructor (name: string, id: string, public max: number, style_type: CommandStyleType) {
-        super(name, id, style_type);
+    public constructor (
+        name: string,
+        id: string,
+        public max: number,
+        board: CommandBoard,
+        style_type: CommandStyleType
+    ) {
+        super(name, id, style_type, board);
     }
 
     public execute(action: string): void {

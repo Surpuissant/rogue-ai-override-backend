@@ -1,8 +1,8 @@
 import { Command } from "../Command";
 import CONFIG from "../../Config";
+import { CommandBoard } from "./CommandBoard";
 
 export class Instruction {
-    public timeout: number = CONFIG.INSTRUCTION_TIMEOUT;
     public timestampCreation: number;
 
     constructor(public command: Command, public expectedStatus: string, public text: string) {
@@ -12,12 +12,16 @@ export class Instruction {
     public toObject(): Object {
         return {
             "command_id": this.command.id,
-            "timeout": this.timeout,
+            "timeout": this.getTimeOut(),
             "timestampCreation": this.timestampCreation,
             "command_type": this.command.getType(),
             "instruction_text": this.text,
             "expected_status": this.expectedStatus
         }
+    }
+
+    public getTimeOut(): number {
+        return CONFIG.INSTRUCTION_TIMEOUT;
     }
 
     public isComplete(): boolean {

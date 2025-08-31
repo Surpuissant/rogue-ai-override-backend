@@ -51,7 +51,11 @@ export class PlayingState implements RoomState {
     public createCommandBoard() {
         this.room.players.forEach(player => {
             const commandBoard =
-                CommandBoard.createCommandBoard(Array.from(this.commandPlayer.values()), this.room.roomRule.onlyCommandType);
+                CommandBoard.createCommandBoard(
+                    this.room,
+                    Array.from(this.commandPlayer.values()),
+                    this.room.roomRule.onlyCommandType
+                );
             this.commandPlayer.set(player, commandBoard);
         });
     }
@@ -62,7 +66,7 @@ export class PlayingState implements RoomState {
             this.updateRandomInstructionOnBoard(board);
             this.broadcastInfoToPlayer()
             this.updateThreat(Math.min(100, this.threat + 5))
-        }, CONFIG.INSTRUCTION_TIMEOUT);
+        }, board.instruction === null ? CONFIG.INSTRUCTION_TIMEOUT : board.instruction.getTimeOut());
     }
 
     public setRandomInstruction(): void {
