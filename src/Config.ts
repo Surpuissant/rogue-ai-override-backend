@@ -5,6 +5,7 @@ export class Config {
     public readonly INSTRUCTION_TIMEOUT = 10000
     public readonly DEFAULT_GAME_DURATION = 45000
     public readonly GAME_LEVEL_INCREMENTAL_DURATION = 10000
+    public readonly GAME_LEVEL_DECREMENTAL_DURATION = 1000
 }
 
 const CONFIG = new Config();

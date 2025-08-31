@@ -9,7 +9,7 @@ export abstract class Command {
         public name: string,
         public id: string,
         private readonly styleType: CommandStyleType,
-        private board: CommandBoard) { }
+        public board: CommandBoard) { }
 
     public abstract getType(): string;
     public getStyleType(): string { return this.styleType; };

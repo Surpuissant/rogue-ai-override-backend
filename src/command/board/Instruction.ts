@@ -21,7 +21,7 @@ export class Instruction {
     }
 
     public getTimeOut(): number {
-        return CONFIG.INSTRUCTION_TIMEOUT;
+        return Math.max(4000, CONFIG.INSTRUCTION_TIMEOUT - (CONFIG.GAME_LEVEL_DECREMENTAL_DURATION * this.command.board.room.level));
     }
 
     public isComplete(): boolean {
