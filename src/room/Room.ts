@@ -3,6 +3,7 @@ import { RoomState } from "./roomState/RoomState";
 import { WaitingState } from "./roomState/WaitingState";
 import { Logger, TableInformation } from "../utils/Logger";
 import { RoomRule } from "./RoomRule";
+import CONFIG from "../Config";
 
 export class Room {
     private readonly code: string;
@@ -23,10 +24,17 @@ export class Room {
         this.broadcastInfoOfAllPlayers()
     }
 
+    public getRoomDuration(): number {
+        // À chaque niveau, on rajoute 10000 ms de temps
+        // de partie, pour rajouter une difficulté progressive
+        return this.roomRule.duration + (CONFIG.GAME_LEVEL_INCREMENTAL_DURATION * (this.level - 1));
+    }
+
     logRoomInfo(additionnalInfo: TableInformation | null = null): void {
         let headers = [
             "Code",
-            "Durée (s)",
+            "Durée de base (s)",
+            "Durée calculées (s)",
             "Type de commande autorisé",
             "Nb joueurs actuels",
             "Etat actuel"
@@ -35,6 +43,7 @@ export class Room {
         const contents = [
             this.code,
             this.roomRule.duration.toString(),
+            this.getRoomDuration().toString(),
             this.roomRule.onlyCommandType
                 ? this.roomRule.onlyCommandType.name
                 : "aucune restriction",

@@ -89,7 +89,7 @@ describe("Game flow tests", () => {
     });
 
     test("Verify game is losable with timeout", async () => {
-        await wait(room!.roomRule.duration + 2000);
+        await wait(room!.getRoomDuration() + 2000);
         expect(room?.getStateName()).toBe("end");
         expect(win).toBe(false);
     }, 120000);

@@ -26,7 +26,7 @@ export class PlayingState implements RoomState {
             payload: {
                 state: "game_start",
                 start_threat: this.threat,
-                game_duration: this.room.roomRule.duration,
+                game_duration: this.room.getRoomDuration(),
             }
         });
         room.players.forEach(player => { player.setReady(false) })
@@ -45,7 +45,7 @@ export class PlayingState implements RoomState {
             } else {
                 this.endGame(false);
             }
-        }, this.room.roomRule.duration);
+        }, this.room.getRoomDuration());
     }
 
     public createCommandBoard() {
