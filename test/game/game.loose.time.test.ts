@@ -77,6 +77,10 @@ beforeAll(async () => {
 });
 
 afterAll(() => {
+    player1ws.close();
+    player2ws.close();
+    player3ws.close();
+    player4ws.close();
     server.server.close();
 });
 

@@ -61,5 +61,11 @@ describe("Room creation and state", () => {
         await wait(500)
 
         expect(room!.getStateName()).toBe("ready");
+
+        player1ws.close()
+        player2ws.close()
+        player3ws.close()
+        player4ws.close()
+        player5ws.close()
     });
 });
