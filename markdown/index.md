@@ -1,5 +1,7 @@
 # Rogue AI Override — Cahier des charges — (MVP)
 
+Le barème de notation est disponible sur [docs/notes](../docs/notes).
+
 ## 1) Présentation & pitch
 
 Rogue AI Override — Shout orders. Save the world est un jeu sur Android, multijoueur (2–6 joueurs).
@@ -9,7 +11,7 @@ Vous êtes une équipe tentant d’empêcher une IA centrale de dominer le monde
 
 **Promesse**
 
-* Parties rapides (\~3 min), **coop**, gestion du stress et de l'organisation.
+* Parties rapides (\~45s), **coop**, gestion du stress et de l'organisation.
 * Vocabulaire IA absurde, montée de tension et fun.
 
 ---
