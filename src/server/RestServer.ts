@@ -4,6 +4,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import { ToggleCommand } from "../command/ToggleCommand";
 import { SliderCommand } from "../command/SliderCommand";
+import { registerMarkdownRoutes } from './routes/MarkdownRoutes';
 
 export class RestServer {
     public app: Application;
@@ -128,5 +129,8 @@ export class RestServer {
             const exists = this.roomManager['rooms'].has(code);
             res.json({ exists });
         });
+
+        /** Markdown routes */
+        registerMarkdownRoutes(this.app);
     }
 }
