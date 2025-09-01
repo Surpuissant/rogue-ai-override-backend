@@ -1,6 +1,6 @@
 export enum CommandStyleType {
+    CUSTOM_BUTTON = "custom_button",
     ON_OFF_BUTTON = "onoff_button",
-    LEVER_BUTTON = "lever_button",
     TOGGLE = "toggle",
 
     SLIDER = "slider",

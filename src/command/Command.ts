@@ -15,5 +15,6 @@ export abstract class Command {
     public getStyleType(): string { return this.styleType; };
     public abstract execute(action: string): void;
     public abstract getInstruction(): Instruction;
+    public abstract getLabel(): string;
     public abstract toObject(): object;
 }

@@ -56,9 +56,15 @@ export class SliderCommand extends Command {
             "name": this.name,
             "type": this.getType(),
             "styleType": this.getStyleType(),
+            "label": this.getLabel(),
             "actual_status": this.status,
             "action_possible": actions
         };
+    }
+
+    public getLabel(): string {
+        // A Slider typically have no label
+        return "";
     }
 }
 
