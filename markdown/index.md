@@ -1,7 +1,8 @@
 # Rogue AI Override — Cahier des charges — (MVP)
 
-Le barème de notation est disponible sur [docs/notes](../docs/notes).
-La doc Websocket  est disponible sur [docs/ws-docs](../docs/ws-docs).
+- Le barème de notation est disponible sur [docs/notes](../docs/notes).
+- Documentation de l'API REST : [/api-docs](../api-docs)
+- Documentation du Websocket disponible sur [docs/ws-docs](../docs/ws-docs).
 
 ## 1) Présentation & pitch
 
