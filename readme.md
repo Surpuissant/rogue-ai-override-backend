@@ -6,7 +6,7 @@
 Le serveur est déjà déployé et accessible à l'adresse :
 **https://backend.rogueai.surpuissant.io/**
 
-**Documentation de l'API REST** : https://backend.rogueai.surpuissant.io/api-docs
+**Documentation** : https://backend.rogueai.surpuissant.io/
 
 ## Installation locale
 
