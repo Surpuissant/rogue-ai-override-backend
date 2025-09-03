@@ -10,7 +10,6 @@
     "build-serve": "tsc && node dist/index.js",
     "test": "jest"
   },
-  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
