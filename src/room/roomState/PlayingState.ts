@@ -64,8 +64,8 @@ export class PlayingState implements RoomState {
         if (board.instructionInterval) clearInterval(board.instructionInterval);
         board.instructionInterval = setInterval(() => {
             this.updateRandomInstructionOnBoard(board);
-            this.broadcastInfoToPlayer()
             this.updateThreat(Math.min(100, this.threat + 5))
+            this.broadcastInfoToPlayer()
         }, board.instruction === null ? CONFIG.INSTRUCTION_TIMEOUT : board.instruction.getTimeOut());
     }
 
@@ -77,12 +77,12 @@ export class PlayingState implements RoomState {
 
     public updateRandomInstructionOnBoard(board: CommandBoard) {
         let selectedBoard;
-        if (Math.random() < 1/3) {
+        const otherBoards = Array.from(this.commandPlayer.values()).filter(b => b !== board);
+
+        if (Math.random() < 1/3 || otherBoards.length === 0) {
             selectedBoard = board;
         } else {
-            const others = Array.from(this.commandPlayer.values()).filter(b => b !== board);
-            if (others.length === 0) return;
-            selectedBoard = others[Math.floor(Math.random() * others.length)];
+            selectedBoard = otherBoards[Math.floor(Math.random() * otherBoards.length)];
         }
 
         const availableCommands = selectedBoard.commands.filter(cmd => {
