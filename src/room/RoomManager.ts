@@ -20,18 +20,23 @@ export class RoomManager {
     createRoom(
         onlyCommandType: ConstructorType | null = null,
         gameDuration: number | null = null,
+        soloGame: boolean = false,
     ): string {
         let code: string;
         do {
             code = Math.random().toString(36).slice(2, 8).toUpperCase();
         } while (this.rooms.has(code));
 
-        this.rooms.set(code, new Room(code,
+        let createdRoom: Room = new Room(code,
             new RoomRule(
                 gameDuration === null ? CONFIG.DEFAULT_GAME_DURATION : gameDuration,
                 onlyCommandType,
+                soloGame ? 1 : CONFIG.ROOM_MIN_PLAYERS,
+                soloGame ? 1 : CONFIG.ROOM_MAX_PLAYERS,
             )
-        ));
+        )
+
+        this.rooms.set(code, createdRoom);
         return code;
     }
 

@@ -1,6 +1,5 @@
 import { Command } from "../Command";
 import CONFIG from "../../Config";
-import { CommandBoard } from "./CommandBoard";
 
 export class Instruction {
     public timestampCreation: number;

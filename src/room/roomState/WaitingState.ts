@@ -15,10 +15,10 @@ export class WaitingState implements RoomState {
     getName() { return "waiting"; }
 
     addPlayer(player: Player): boolean {
-        if (this.room.players.length >= CONFIG.ROOM_MAX_PLAYERS) return false;
+        if (this.room.players.length >= this.room.roomRule.maxPlayer) return false;
         this.room.players.push(player);
 
-        if (this.room.getPlayerCount() >= CONFIG.ROOM_MIN_PLAYERS) {
+        if (this.room.getPlayerCount() >= this.room.roomRule.minPlayer) {
             this.room.setState(new ReadyState(this.room));
         }
 

@@ -18,16 +18,16 @@ export class ReadyState implements RoomState {
     getName() { return "ready"; }
 
     addPlayer(player: Player): boolean {
-        if (this.room.players.length >= CONFIG.ROOM_MAX_PLAYERS) return false;
+        if (this.room.players.length >= this.room.roomRule.maxPlayer) return false;
         this.room.players.push(player);
-        if (this.room.players.length === CONFIG.ROOM_MAX_PLAYERS) {
+        if (this.room.players.length === this.room.roomRule.maxPlayer) {
             this.room.setState(new FullState(this.room));
         }
         return true;
     }
 
     removePlayer(player: Player): void {
-        if (this.room.players.length < CONFIG.ROOM_MIN_PLAYERS) {
+        if (this.room.players.length < this.room.roomRule.minPlayer) {
             this.room.setState(new WaitingState(this.room));
         }
     }
