@@ -72,6 +72,9 @@ export class RestServer {
          *                 type: string
          *                 enum: ["toggle", "slider"]
          *                 description: Optional command type for the room, enforce a type of Command and give only the given type
+         *               soloGame:
+         *                 type: boolean
+         *                 description: Optional. If true, creates the room in solo mode. Defaults to false.
          *     responses:
          *       200:
          *         description: Room created successfully
@@ -83,9 +86,29 @@ export class RestServer {
          *                 roomCode:
          *                   type: string
          *                   description: The generated room code
+         *                 roomInfo:
+         *                   type: object
+         *                   description: Metadata about the created room
+         *                   properties:
+         *                     minPlayer:
+         *                       type: integer
+         *                       description: Minimum number of players allowed in the room
+         *                       example: 2
+         *                     maxPlayer:
+         *                       type: integer
+         *                       description: Maximum number of players allowed in the room
+         *                       example: 6
+         *                     gameDuration:
+         *                       type: integer
+         *                       description: The total game duration (in ms), adjusted by the level
+         *                       example: 45000
+         *                     roomRestriction:
+         *                       type: string
+         *                       description: Type of command restriction (e.g. ToggleCommand, SliderCommand) or "aucune restriction"
+         *                       example: ToggleCommand
          */
         this.app.post('/create-room', (req: Request, res: Response) => {
-            const { gameType } = req.body || {};
+            let { gameType, soloGame } = req.body || {};
 
             // Validation du gameType s'il est fourni
             if (gameType && !['toggle', 'slider'].includes(gameType)) {
@@ -94,18 +117,31 @@ export class RestServer {
                 });
             }
 
+            if(soloGame === undefined) {
+                soloGame = false;
+            }
+            if (soloGame !== undefined && typeof soloGame !== 'boolean') {
+                return res.status(400).json({
+                    error: 'Invalid soloGame. Must be a boolean',
+                });
+            }
+
             let code: string;
             switch (gameType) {
                 case 'toggle':
-                    code = this.roomManager.createRoom(ToggleCommand);
+                    code = this.roomManager.createRoom(ToggleCommand, null, soloGame);
                     break;
                 case 'slider':
-                    code = this.roomManager.createRoom(SliderCommand);
+                    code = this.roomManager.createRoom(SliderCommand, null, soloGame);
                     break;
                 default:
-                    code = this.roomManager.createRoom();
+                    code = this.roomManager.createRoom(null,null, soloGame);
             }
-            res.json({ roomCode: code });
+            let createdRoom = this.roomManager.getRoom(code)
+            res.json({
+                roomCode: code,
+                roomInfo: createdRoom?.toObject()
+            });
         });
 
         /**
