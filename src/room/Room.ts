@@ -128,4 +128,15 @@ export class Room {
     isEveryPlayerReady(): boolean {
         return this.players.every(p => p.ready);
     }
+
+    toObject(): object {
+        return {
+            "minPlayer": this.roomRule.minPlayer,
+            "maxPlayer": this.roomRule.maxPlayer,
+            "gameDuration": this.getRoomDuration(),
+            "roomRestriction": this.roomRule.onlyCommandType
+                ? this.roomRule.onlyCommandType.name
+                : "aucune restriction"
+        }
+    }
 }

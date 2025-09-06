@@ -40,9 +40,9 @@ export class EndState implements RoomState {
     onPlayerReady(player: Player): void {
         // Swap pour revenir à un state normal
 
-        if(this.room.getPlayerCount() >= CONFIG.ROOM_MAX_PLAYERS){
+        if(this.room.getPlayerCount() >= this.room.roomRule.maxPlayer) {
             this.room.setState(new FullState(this.room))
-        } else if(this.room.getPlayerCount() >= CONFIG.ROOM_MIN_PLAYERS){
+        } else if(this.room.getPlayerCount() >= this.room.roomRule.minPlayer){
             this.room.setState(new ReadyState(this.room))
         } else if(this.room.getPlayerCount() <= 1){
             this.room.setState(new WaitingState(this.room))

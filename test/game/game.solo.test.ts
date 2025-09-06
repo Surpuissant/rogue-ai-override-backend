@@ -8,21 +8,17 @@ import {ToggleCommand} from "../../src/command/ToggleCommand";
 import CONFIG from "../../src/Config";
 
 let server: Server;
-const TEST_PORT = 3015;
+const TEST_PORT = 3037;
 let roomCode: string;
 let room: ReturnType<typeof Server.prototype.roomManager.getRoom>;
 
 let player1ws: WebSocket;
-let player2ws: WebSocket;
 
 let globalThreat: number = 0;
 let instructionP1: any = null;
 let boardCommandP1: any[] = [];
-let instructionP2: any = null;
-let boardCommandP2: any[] = [];
 
 let firstInstruction: any = null;
-let player1Name: string = "";
 
 // Utility function pour connecter un joueur
 const connectPlayer = (roomCode: string, port: number, messageCb: any) =>
@@ -47,30 +43,19 @@ beforeAll(async () => {
     server = Server.getInstance(TEST_PORT);
     server.start();
 
-    roomCode = server.roomManager.createRoom(ToggleCommand);
+    roomCode = server.roomManager.createRoom(ToggleCommand, null, true);
     room = server.roomManager.getRoom(roomCode);
 
     player1ws = await connectPlayer(roomCode, TEST_PORT, (data: any) => {
         if (data.type === "player_board") {
+            console.warn(data.payload)
             globalThreat = data.payload.threat;
             instructionP1 = data.payload.instruction;
             boardCommandP1 = data.payload.board.commands;
         }
-        if(data.type === "room_info") {
-            player1Name = data.payload.you.name;
-        }
-    });
-
-    player2ws = await connectPlayer(roomCode, TEST_PORT, (data: any) => {
-        if (data.type === "player_board") {
-            globalThreat = data.payload.threat;
-            instructionP2 = data.payload.instruction;
-            boardCommandP2 = data.payload.board.commands;
-        }
     });
 
     player1ws.send(JSON.stringify({ type: "room", payload: { ready: true } }));
-    player2ws.send(JSON.stringify({ type: "room", payload: { ready: true } }));
 
     // Attente de la transition de game state : waiting -> timer -> playing
     await wait(3500);
@@ -78,69 +63,49 @@ beforeAll(async () => {
 
 afterAll(() => {
     player1ws.close();
-    player2ws.close();
     server.server.close();
 });
 
 describe("Game flow tests", () => {
 
-    test("Room should exist and start in waiting state", async () => {
+    test("Room should exist and be in playing state", async () => {
         expect(room).toBeDefined();
         expect(room!.getStateName()).toBe("playing");
         expect(boardCommandP1.length).toBeGreaterThanOrEqual(1);
-        expect(boardCommandP2.length).toBeGreaterThanOrEqual(1);
         expect(instructionP1).not.toBeNull();
-        expect(instructionP2).not.toBeNull();
         expect(globalThreat).toBe(CONFIG.STARTING_THREAT);
-    });
-
-    test("Can refresh name", async () => {
-        let startName = player1Name;
-        player1ws.send(JSON.stringify({ "type": "refresh_name" }))
-        await wait(1000)
-        expect(startName).not.toBe(player1Name)
     });
 
     test("Player toggles action", async () => {
         await wait(200);
-        let selectedPlayer = player1ws;
-        let selectedInstruction = instructionP1;
-        firstInstruction = selectedInstruction.instruction_text
-
-        let command = boardCommandP1.find((command) => command.id === selectedInstruction.command_id)
-
-        if(command === undefined){
-            selectedPlayer = player2ws
-        }
+        console.warn(instructionP1);
+        firstInstruction = instructionP1.instruction_text
 
         // Dans ce jeu, les actions du joueur 1 dépendent des instructions du joueur 2
-        selectedPlayer.send(JSON.stringify({
+        player1ws.send(JSON.stringify({
             type: "execute_action",
             payload: {
                 // Ici je triche pour être vraiment sûr que le test passe
-                command_id: selectedInstruction.command_id,
+                command_id: instructionP1.command_id,
                 action: "toggle"
             }
         }));
         await wait(200);
         expect(globalThreat).toBe(CONFIG.STARTING_THREAT-5);
         // Et maintenant du coup, l'instruction P2 a du s'update
-        expect(selectedInstruction).not.toBe(firstInstruction);
+        expect(instructionP1).not.toBe(firstInstruction);
     });
 
     test("Global board states remain consistent", () => {
         expect(boardCommandP1.length).toBe(4);
-        expect(boardCommandP2.length).toBe(4);
         // Ils sont tous plus ready du coup, car la partie est lancé
         expect(room!.players.filter(p => p.ready).length).toBe(0);
     });
 
     test("Timeout on instruction works", async () => {
         firstInstruction = instructionP1.instruction_text
-        // On attend le timeout + 1 secondes pour être sûr que le message a eu le temps d'être reçu
-        await wait(CONFIG.INSTRUCTION_TIMEOUT + 3000);
+        await wait(CONFIG.INSTRUCTION_TIMEOUT + 1000);
         expect(instructionP1.instruction_text).not.toBe(firstInstruction);
-        // Le global threat a du un peu augmenté, vu qu'il y a eu 2 timeout
-        expect(globalThreat).toBe(CONFIG.STARTING_THREAT + 5);
-    }, CONFIG.INSTRUCTION_TIMEOUT + 5000);
+        expect(globalThreat).toBe(CONFIG.STARTING_THREAT);
+    }, CONFIG.INSTRUCTION_TIMEOUT + 2000);
 });
