@@ -46,7 +46,7 @@ Les clients peuvent envoyer des messages pour interagir avec le jeu :
 - **refreshName** : Pour update le nom du joueur (toujours sur une base aléatoire).
   ```js
   { 
-      type: "refreshName"
+      type: "refresh_name"
   }
   ```
 

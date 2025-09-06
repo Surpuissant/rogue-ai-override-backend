@@ -71,10 +71,8 @@ export class Player {
                 case 'room':
                     this.setReady(data.payload.ready)
                     break;
-                case 'refreshName':
-                    console.log("refresh");
+                case 'refresh_name':
                     this.refreshName()
-                    console.log("refresh good");
                     break;
                 case 'execute_action':
                     this.room?.onPlayerMessage(this, data);

@@ -57,7 +57,6 @@ beforeAll(async () => {
             boardCommandP1 = data.payload.board.commands;
         }
         if(data.type === "room_info") {
-            console.warn("receive room info")
             player1Name = data.payload.you.name;
         }
     });
@@ -96,10 +95,9 @@ describe("Game flow tests", () => {
     });
 
     test("Can refresh name", async () => {
-        console.warn("Send refresh name info")
         let startName = player1Name;
-        player1ws.send(JSON.stringify({ "type": "refreshName" }))
-        wait(1000)
+        player1ws.send(JSON.stringify({ "type": "refresh_name" }))
+        await wait(1000)
         expect(startName).not.toBe(player1Name)
     });
 
