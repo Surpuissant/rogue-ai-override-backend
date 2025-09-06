@@ -22,6 +22,7 @@ let instructionP2: any = null;
 let boardCommandP2: any[] = [];
 
 let firstInstruction: any = null;
+let player1Name: string = "";
 
 // Utility function pour connecter un joueur
 const connectPlayer = (roomCode: string, port: number, messageCb: any) =>
@@ -54,6 +55,10 @@ beforeAll(async () => {
             globalThreat = data.payload.threat;
             instructionP1 = data.payload.instruction;
             boardCommandP1 = data.payload.board.commands;
+        }
+        if(data.type === "room_info") {
+            console.warn("receive room info")
+            player1Name = data.payload.you.name;
         }
     });
 
@@ -88,6 +93,14 @@ describe("Game flow tests", () => {
         expect(instructionP1).not.toBeNull();
         expect(instructionP2).not.toBeNull();
         expect(globalThreat).toBe(CONFIG.STARTING_THREAT);
+    });
+
+    test("Can refresh name", async () => {
+        console.warn("Send refresh name info")
+        let startName = player1Name;
+        player1ws.send(JSON.stringify({ "type": "refreshName" }))
+        wait(1000)
+        expect(startName).not.toBe(player1Name)
     });
 
     test("Player toggles action", async () => {
