@@ -45,7 +45,7 @@ export class Player {
     }
 
     private refreshName(): void {
-        this.name = NAMES[Math.floor(Math.random() * NAMES.length)];
+        this.name = playerNames[Math.floor(Math.random() * playerNames.length)];
         this.room?.broadcastInfoOfAllPlayers();
     }
 
