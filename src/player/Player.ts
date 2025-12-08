@@ -1,49 +1,7 @@
 import WebSocket from "ws";
 import { Room } from "../room/Room";
 import { Logger } from "../utils/Logger";
-
-const NAMES = [
-    "Nova",
-    "Agent Zara",
-    "Krix",
-    "ByteMaster",
-    "Agent Echo",
-    "Vex_Hunter",
-    "FluxRider",
-    "Agent Nyx",
-    "ZenWarrior",
-    "RavenStrike",
-    "Agent Blitz",
-    "SageHacker",
-    "StormBreaker",
-    "Agent Cipher",
-    "PhoenixRising",
-    "RebelCode",
-    "Agent Ghost",
-    "TitanForce",
-    "SparkFly",
-    "Agent Vector",
-    "PulseWave",
-    "NexusPoint",
-    "Agent Rogue",
-    "OmegaLast",
-    "PrismShard",
-    "Agent Drift",
-    "ShadowNet",
-    "VertexCore",
-    "Agent Chaos",
-    "MatrixBender",
-    "PixelNinja",
-    "Agent Code",
-    "NeonGhost",
-    "CyberPunk",
-    "Agent Phantom",
-    "QuantumRush",
-    "VirtualVibes",
-    "Agent Samurai",
-    "DigitalDemon",
-    "Agent Shock"
-];
+import playerNames from "../data/playerNames.json";
 
 export class Player {
     public ws: WebSocket;
@@ -54,7 +12,7 @@ export class Player {
 
     constructor(ws: WebSocket) {
         this.ws = ws;
-        this.name = NAMES[Math.floor(Math.random() * NAMES.length)];
+        this.name = playerNames[Math.floor(Math.random() * playerNames.length)];
         this.id = crypto.randomUUID();
     }
 
