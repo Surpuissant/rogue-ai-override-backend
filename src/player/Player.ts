@@ -29,6 +29,9 @@ export class Player {
                 case 'room':
                     this.setReady(data.payload.ready)
                     break;
+                case 'refresh_name':
+                    this.refreshName()
+                    break;
                 case 'execute_action':
                     this.room?.onPlayerMessage(this, data);
                     break;
@@ -39,6 +42,11 @@ export class Player {
         } catch (err) {
             Logger.error('Message parsing error:' + err);
         }
+    }
+
+    private refreshName(): void {
+        this.name = NAMES[Math.floor(Math.random() * NAMES.length)];
+        this.room?.broadcastInfoOfAllPlayers();
     }
 
     public toObject(): object {
